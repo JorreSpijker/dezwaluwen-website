@@ -2,32 +2,245 @@
   "veld": {
     "title": "Veld",
     "start": "26 augustus 2026",
-    "columns": [{"day": "Woensdag"}, {"day": "Vrijdag"}],
+    "columns": [
+      {
+        "day": "Woensdag"
+      },
+      {
+        "day": "Vrijdag"
+      }
+    ],
     "groups": [
       {
         "title": "Senioren",
         "rows": [
-          {"team": "S1", "cells": [{"time": "20:30–22:00", "field": "Veld 2"}, {"time": "20:30–22:00", "field": "Veld 1"}]},
-          {"team": "S2", "cells": [{"time": "20:30–22:00", "field": "Veld 2"}, {"time": "20:30–22:00", "field": "Veld 1"}]},
-          {"team": "S3", "cells": [{"time": "19:30–20:30", "field": "Veld 1"}, {"time": "20:30–21:30", "field": "Veld 2"}]},
-          {"team": "MW1", "cells": [{"time": "20:30–21:30", "field": "Veld 1", "note": "wedstrijd"}, {"time": "19:30–20:30", "field": "Veld 2", "note": "training"}]},
-          {"team": "G1", "cells": [null, {"time": "19:30–20:30", "field": "Veld 2"}]},
-          {"team": "Recreanten 1", "cells": [{"time": "Zelf te bepalen", "field": "Tienveldje"}, null]},
-          {"team": "Recreanten 2", "cells": [null, {"time": "Zelf te bepalen", "field": "Veld 2"}]}
+          {
+            "team": "S1",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "20:30–22:00",
+                "field": "Veld 2"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "20:30–22:00",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "S2",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "20:30–22:00",
+                "field": "Veld 2"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "20:30–22:00",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "S3",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "19:30–20:30",
+                "field": "Veld 1"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "20:30–21:30",
+                "field": "Veld 2"
+              }
+            ]
+          },
+          {
+            "team": "MW1",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "20:30–21:30",
+                "field": "Veld 1",
+                "note": "wedstrijd"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "19:30–20:30",
+                "field": "Veld 2",
+                "note": "training"
+              }
+            ]
+          },
+          {
+            "team": "G1",
+            "slots": [
+              {
+                "day": "Vrijdag",
+                "time": "19:30–20:30",
+                "field": "Veld 2"
+              }
+            ]
+          },
+          {
+            "team": "Recreanten 1",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "Zelf te bepalen",
+                "field": "Tienveldje"
+              }
+            ]
+          },
+          {
+            "team": "Recreanten 2",
+            "slots": [
+              {
+                "day": "Vrijdag",
+                "time": "Zelf te bepalen",
+                "field": "Veld 2"
+              }
+            ]
+          }
         ]
       },
       {
         "title": "Jeugd",
         "rows": [
-          {"team": "J1", "cells": [{"time": "19:00–20:30", "field": "Veld 2"}, {"time": "19:00–20:30", "field": "Veld 1"}]},
-          {"team": "J2", "cells": [{"time": "19:00–20:30", "field": "Veld 2"}, {"time": "19:00–20:30", "field": "Veld 1"}]},
-          {"team": "J3", "cells": [{"time": "19:00–20:30", "field": "Veld 1"}, {"time": "18:00–19:30", "field": "Veld 2"}]},
-          {"team": "J4", "cells": [{"time": "18:00–19:00", "field": "Veld 2"}, {"time": "18:00–19:30", "field": "Veld 2"}]},
-          {"team": "J5", "cells": [{"time": "18:00–19:00", "field": "Veld 2"}, {"time": "18:00–19:30", "field": "Veld 2"}]},
-          {"team": "J6", "cells": [{"time": "18:00–19:00", "field": "Veld 1"}, {"time": "18:00–19:00", "field": "Veld 1"}]},
-          {"team": "J7", "cells": [{"time": "18:00–19:00", "field": "Veld 1"}, {"time": "18:00–19:00", "field": "Veld 1"}]},
-          {"team": "J8", "cells": [{"time": "18:00–19:00", "field": "Veld 1"}, {"time": "18:00–19:00", "field": "Veld 1"}]},
-          {"team": "Kangoeroes*", "cells": [{"time": "18:00–19:00", "field": "Veld 1"}, null]}
+          {
+            "team": "J1",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "19:00–20:30",
+                "field": "Veld 2"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "19:00–20:30",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "J2",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "19:00–20:30",
+                "field": "Veld 2"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "19:00–20:30",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "J3",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "19:00–20:30",
+                "field": "Veld 1"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "18:00–19:30",
+                "field": "Veld 2"
+              }
+            ]
+          },
+          {
+            "team": "J4",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "18:00–19:00",
+                "field": "Veld 2"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "18:00–19:30",
+                "field": "Veld 2"
+              }
+            ]
+          },
+          {
+            "team": "J5",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "18:00–19:00",
+                "field": "Veld 2"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "18:00–19:30",
+                "field": "Veld 2"
+              }
+            ]
+          },
+          {
+            "team": "J6",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "J7",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "J8",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              },
+              {
+                "day": "Vrijdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              }
+            ]
+          },
+          {
+            "team": "Kangoeroes*",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "time": "18:00–19:00",
+                "field": "Veld 1"
+              }
+            ]
+          }
         ]
       }
     ],
@@ -36,32 +249,249 @@
   "zaal": {
     "title": "Zaal",
     "start": "27 oktober 2025",
-    "columns": [{"day": "Maandag", "location": "Heerenmäten"}, {"day": "Woensdag", "location": "Heerenmäten"}, {"day": "Woensdag", "location": "De Cluse"}, {"day": "Vrijdag", "location": "De Cluse"}],
+    "columns": [
+      {
+        "day": "Maandag",
+        "location": "Heerenmäten"
+      },
+      {
+        "day": "Woensdag",
+        "location": "Heerenmäten"
+      },
+      {
+        "day": "Woensdag",
+        "location": "De Cluse"
+      },
+      {
+        "day": "Vrijdag",
+        "location": "De Cluse"
+      }
+    ],
     "groups": [
       {
         "title": "Senioren",
         "rows": [
-          {"team": "S1", "cells": [{"time": "20:30–22:00"}, {"time": "20:30–22:00"}, null, null]},
-          {"team": "S2", "cells": [{"time": "20:30–22:00"}, {"time": "20:30–22:00"}, null, null]},
-          {"team": "S3", "cells": [{"time": "19:30–20:30"}, {"time": "19:30–20:30"}, null, null]},
-          {"team": "MW1", "cells": [null, null, {"time": "20:00–21:00", "note": "wedstrijd"}, null]},
-          {"team": "G1", "cells": [null, null, null, {"time": "19:00–20:00"}]},
-          {"team": "Recreanten 1", "cells": [null, {"time": "19:30–20:30"}, null, null]},
-          {"team": "Recreanten 2", "cells": [null, {"time": "19:30–20:30"}, null, null]}
+          {
+            "team": "S1",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "20:30–22:00"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "20:30–22:00"
+              }
+            ]
+          },
+          {
+            "team": "S2",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "20:30–22:00"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "20:30–22:00"
+              }
+            ]
+          },
+          {
+            "team": "S3",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "19:30–20:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "19:30–20:30"
+              }
+            ]
+          },
+          {
+            "team": "MW1",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "location": "De Cluse",
+                "time": "20:00–21:00",
+                "note": "wedstrijd"
+              }
+            ]
+          },
+          {
+            "team": "G1",
+            "slots": [
+              {
+                "day": "Vrijdag",
+                "location": "De Cluse",
+                "time": "19:00–20:00"
+              }
+            ]
+          },
+          {
+            "team": "Recreanten 1",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "19:30–20:30"
+              }
+            ]
+          },
+          {
+            "team": "Recreanten 2",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "19:30–20:30"
+              }
+            ]
+          }
         ]
       },
       {
         "title": "Jeugd",
         "rows": [
-          {"team": "J1 (A1)", "cells": [{"time": "19:30–20:30"}, {"time": "18:30–19:30"}, null, null]},
-          {"team": "J2 (B1)", "cells": [{"time": "18:30–19:30"}, {"time": "18:30–19:30"}, null, null]},
-          {"team": "J3 (D1)", "cells": [{"time": "18:30–19:30"}, null, {"time": "18:00–19:00"}, null]},
-          {"team": "J4 (D2)", "cells": [{"time": "17:30–18:30"}, null, {"time": "18:00–19:00"}, null]},
-          {"team": "J5 (E1)", "cells": [{"time": "17:30–18:30"}, {"time": "17:30–18:30"}, null, null]},
-          {"team": "J6 (E2)", "cells": [{"time": "17:30–18:30"}, {"time": "17:30–18:30"}, null, null]},
-          {"team": "J7 (E3)", "cells": [{"time": "17:30–18:30"}, {"time": "17:30–18:30"}, null, null]},
-          {"team": "J8 (F1)", "cells": [{"time": "17:30–18:30"}, {"time": "17:30–18:30"}, null, null]},
-          {"team": "Kangoeroes*", "cells": [null, {"time": "17:30–18:30"}, null, null]}
+          {
+            "team": "J1 (A1)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "19:30–20:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "18:30–19:30"
+              }
+            ]
+          },
+          {
+            "team": "J2 (B1)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "18:30–19:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "18:30–19:30"
+              }
+            ]
+          },
+          {
+            "team": "J3 (D1)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "18:30–19:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "De Cluse",
+                "time": "18:00–19:00"
+              }
+            ]
+          },
+          {
+            "team": "J4 (D2)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "De Cluse",
+                "time": "18:00–19:00"
+              }
+            ]
+          },
+          {
+            "team": "J5 (E1)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              }
+            ]
+          },
+          {
+            "team": "J6 (E2)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              }
+            ]
+          },
+          {
+            "team": "J7 (E3)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              }
+            ]
+          },
+          {
+            "team": "J8 (F1)",
+            "slots": [
+              {
+                "day": "Maandag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              },
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              }
+            ]
+          },
+          {
+            "team": "Kangoeroes*",
+            "slots": [
+              {
+                "day": "Woensdag",
+                "location": "Heerenmäten",
+                "time": "17:30–18:30"
+              }
+            ]
+          }
         ]
       }
     ],

@@ -1,4 +1,4 @@
-import club from './club.json';
+import { club } from './club';
 
 export type MenuItem = {
   label: string;

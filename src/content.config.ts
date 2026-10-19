@@ -8,7 +8,7 @@ const news = defineCollection({
     z.object({
       title: z.string(),
       // Kortere titel voor de mobiele nieuwslijst
-      titleShort: z.string().optional(),
+      titleShort: z.preprocess((v) => v || undefined, z.string().optional()),
       date: z.coerce.date(),
       category: z.string(),
       image: image(),

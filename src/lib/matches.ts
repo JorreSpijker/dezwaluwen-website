@@ -3,7 +3,7 @@
 export type Match = { time: string; home: string; away: string; homeOwn: boolean; awayOwn: boolean; score: string; result?: 'win' | 'draw' | 'loss' };
 export type MatchDay = { label: string; matches: Match[] };
 
-import club from '../data/club.json';
+import { club } from '../data/club';
 
 // Clubcode, teamcodes en poules staan in src/data/club.json
 const CLUB = club.clubCode;
