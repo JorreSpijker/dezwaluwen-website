@@ -3,15 +3,14 @@
 Branch: `feature/admin`
 
 ## Doel
-Vrijwilligers loggen in met e-mail (geen wachtwoord, geen GitHub-account), passen JSON-data aan via formulieren en beheren nieuwsberichten. Opslaan = commit op `main`, Vercel deployt, direct live.
+Vrijwilligers loggen in met hun Google-account (geen wachtwoord, geen GitHub-account), passen JSON-data aan via formulieren en beheren nieuwsberichten. Opslaan = commit op `main`, Vercel deployt, direct live.
 
 ## Uitgangspunten
 | Onderwerp | Keuze |
 |---|---|
 | Hosting | Vercel; site blijft statisch, alleen `/beheer` + `/api/beheer/*` server-side |
-| Login | magic link per e-mail, alleen bekende gebruikers, geen database |
+| Login | Google (OAuth + PKCE via `arctic`), alleen accounts die wij toevoegen, geen database |
 | Rechten | rollen Editor en Admin (zie Rollen) |
-| Afzender mail | eigen clubdomein, DNS-toegang aanwezig |
 | GitHub | fine-grained token |
 | Opslag | git (GitHub API), geen database |
 | Validatie | dezelfde zod-schema's voor build, API en formulieren |
@@ -38,8 +37,8 @@ Afgevallen: Decap/Sveltia (login vereist GitHub of DecapBridge, configuratie te 
 ## Architectuur
 ```
 browser /beheer (React)
-  │  login: e-mail ─► /api/beheer/login ─► mail met link (Resend)
-  │  link ─► /api/beheer/verify ─► sessiecookie (JWT, httpOnly)
+  │  login: /api/beheer/google ─► Google ─► /api/beheer/google/callback
+  │         ─► e-mail in gebruikerslijst? ─► sessiecookie (JWT, httpOnly)
   │
   │  laden:   GET  /api/beheer/file?path=…        ─► GitHub: inhoud + sha
   │  opslaan: POST /api/beheer/commit {files, baseSha}
@@ -52,9 +51,10 @@ GitHub main ─► Vercel build (zod-validatie nogmaals) ─► live
 ```
 src/
   data/schemas.ts            zod-schema's, gedeeld door build, API en formulieren
-  lib/admin/auth.ts          token + sessie (jose)
+  lib/admin/auth.ts          sessie (jose)
+  lib/admin/google.ts        Google OAuth-client (arctic)
   lib/admin/users.ts         gebruikers + rollen uit beheer/gebruikers.json, rechtencheck
-  lib/admin/github.ts        lezen + commit van meerdere bestanden (Octokit)
+  lib/admin/repo.ts          lezen + commit van meerdere bestanden (GitHub API via fetch; lokaal zonder token: werkmap)
   middleware.ts              /beheer en /api/beheer afschermen
   pages/beheer/              login, overzicht, editors (prerender = false)
   pages/api/beheer/          login, verify, logout, file, commit, news
@@ -63,26 +63,25 @@ src/
 
 ## Stappen
 
-### 0. Basis
+### 0. ✅ Basis
 Validatiewerk (schema's, platte `trainingstijden.json`) als eerste commit op deze branch.
 → verify: `npm run build` slaagt, `dist` identiek aan `main`.
 
-### 1. Server-side routes
-`@astrojs/vercel` adapter, `@astrojs/react`. Standaard blijft alles prerendered; alleen beheerroutes `export const prerender = false`.
+### 1. ✅ Server-side routes
+Astro 7 (met `compressHTML: true` voor witruimte zoals Astro 6), `@astrojs/vercel` adapter, `@astrojs/react`. Standaard blijft alles prerendered; alleen beheerroutes `export const prerender = false`.
 → verify: build toont publieke pagina's als statisch; `/beheer` server-rendered; Vercel preview-deploy werkt.
 
-### 2. Schema's centraliseren
+### 2. ✅ Schema's centraliseren
 Schema's uit `trainingstijden.ts`, `club.ts`, `organisatie.ts` verhuizen naar `src/data/schemas.ts`; bestaande modules importeren ze.
 → verify: build-output identiek; `z.toJSONSchema()` levert bruikbaar JSON Schema voor `club` en `organisatie`.
 
-### 3. Login
-- `/beheer/login`: e-mailveld. API stuurt alleen mail als adres in `gebruikers.json` of `OWNER_EMAILS` staat; antwoord altijd hetzelfde (geen adres-lekkage).
-- Token: JWT (15 min), getekend met `AUTH_SECRET`. Link → `/api/beheer/verify` → sessiecookie 30 dagen, `httpOnly`, `secure`, `SameSite=Lax`.
+### 3. ✅ Login
+- `/beheer/login`: knop "Inloggen met Google" → `/api/beheer/google` (state + PKCE in cookies van 10 min) → Google → `/api/beheer/google/callback`.
+- Callback: state check, code inwisselen, alleen geverifieerd e-mailadres; toegang als adres in `gebruikers.json` of `OWNER_EMAILS` staat.
+- Sessie: JWT 30 dagen, getekend met `AUTH_SECRET`, cookie `httpOnly`, `secure`, `SameSite=Lax`.
 - `middleware.ts`: zonder geldige sessie → redirect naar login (pagina's) of 401 (API).
-- Lokaal: link in terminal loggen i.p.v. mailen.
-- Simpele rate limit op login (per IP, in geheugen volstaat bij deze schaal).
 - Rechtencheck per route: `requireRole('editor' | 'admin')`.
-→ verify: onbekend adres krijgt geen mail; verlopen link geweigerd; zonder cookie geen toegang; Editor krijgt 403 op `club.json`, `organisatie.json` en gebruikersbeheer (pagina én API); gebruiker uit lijst halen blokkeert bestaande sessie binnen 60 s.
+→ verify: account buiten lijst → "geen toegang"; ongeldige state/code → "mislukt"; zonder cookie geen toegang; Editor krijgt 403 op `club.json`, `organisatie.json` en gebruikersbeheer; gebruiker uit lijst halen blokkeert bestaande sessie binnen 60 s.
 
 ### 4. GitHub-laag
 - Lezen: inhoud + blob-sha per bestand.
@@ -125,15 +124,15 @@ Handleiding editors (`docs/beheer-handleiding.md`), env-vars in Vercel, eerste g
 |---|---|
 | `AUTH_SECRET` | tekenen tokens/sessies |
 | `OWNER_EMAILS` | komma-gescheiden, altijd Admin (noodtoegang) |
-| `RESEND_API_KEY`, `MAIL_FROM` | versturen inlogmail |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth-client |
 | `GITHUB_TOKEN` | fine-grained token, alleen deze repo, contents read/write |
 | `GITHUB_REPO`, `GITHUB_BRANCH` | doel van commits |
 | `VERCEL_TOKEN` | alleen voor stap 8 |
 
 ## Risico's en aandachtspunten
-- Magic link stateless: binnen 15 min herbruikbaar. Acceptabel bij deze schaal; anders later eenmalig maken met KV-opslag.
+- Google-redirect-URI's moeten vooraf geregistreerd zijn: localhost en productiedomein. Vercel-previews hebben wisselende url's → inloggen op previews werkt niet zonder vaste preview-domeinnaam.
+- Alleen Google-accounts; editor zonder Google-account kan een gratis account maken met eigen e-mailadres.
 - Fine-grained GitHub-token verloopt (max 1 jaar): herinnering zetten om te vernieuwen. Verlopen token = opslaan faalt, site blijft werken.
-- Resend vereist geverifieerd afzenderdomein → DNS-toegang tot domein van club nodig.
 - Elke opslag = deploy. Prima binnen Vercel Hobby; check of Hobby toegestaan is voor vereniging.
 - Sportlink-fetch tijdens build mag contentdeploy niet blokkeren (check `src/lib/matches.ts`).
 

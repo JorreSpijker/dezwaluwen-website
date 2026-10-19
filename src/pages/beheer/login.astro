@@ -1,0 +1,57 @@
+---
+import Beheer from '../../layouts/Beheer.astro';
+
+export const prerender = false;
+
+const messages: Record<string, string> = {
+  'geen-toegang': 'Dit Google-account heeft geen toegang. Vraag een beheerder om je toe te voegen.',
+  mislukt: 'Inloggen is niet gelukt. Probeer het opnieuw.',
+  uitgelogd: 'Je bent uitgelogd.',
+};
+const message = messages[Astro.url.searchParams.get('status') ?? ''];
+---
+
+<Beheer title="Inloggen">
+  <div class="card">
+    <h1>Inloggen</h1>
+    <p class="lead">Log in met het Google-account waarmee je toegang hebt gekregen.</p>
+    {message && <p class="message" role="status">{message}</p>}
+    <a href="/api/beheer/google" class="pill google">Inloggen met Google</a>
+  </div>
+</Beheer>
+
+<style>
+  .card {
+    max-width: 440px;
+    margin: 40px auto 0;
+    padding: 32px;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+  }
+
+  h1 {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0 0 20px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  .message {
+    margin: 0 0 20px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--blue-soft);
+    color: var(--blue-dark);
+    line-height: 1.45;
+  }
+
+  .google {
+    width: 100%;
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const { user } = Astro.locals;
+---
+
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title} — Beheer KV de Zwaluwen</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+  </head>
+  <body>
+    <header class="bar">
+      <a href="/beheer" class="brand">
+        <img src="/logo.svg" alt="" width="32" height="33" />
+        Beheer
+      </a>
+      {
+        user && (
+          <form method="post" action="/api/beheer/logout" class="user">
+            <span>
+              {user.name} · {user.role === 'admin' ? 'Admin' : 'Editor'}
+            </span>
+            <button type="submit">Uitloggen</button>
+          </form>
+        )
+      }
+    </header>
+    <main class="main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(body) {
+    background: var(--surface);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px var(--gutter);
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--blue);
+  }
+
+  .brand:hover {
+    text-decoration: none;
+  }
+
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .user button {
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .main {
+    max-width: 960px;
+    margin-inline: auto;
+    padding: 40px var(--gutter) 80px;
+  }
+</style>

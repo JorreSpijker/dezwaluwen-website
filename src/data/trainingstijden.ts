@@ -1,7 +1,8 @@
 // Trainingstijden: alle data staat in trainingstijden.json (de enige plek om tijden aan te passen).
 // Dit bestand levert alleen types en hulpfuncties voor de pagina's.
-import { z } from 'astro/zod';
+import type { z } from 'astro/zod';
 import json from './trainingstijden.json';
+import { schedule, trainingstijden } from './schemas';
 
 export type Cell = { time: string; field?: string; note?: string } | null;
 export type Row = { team: string; cells: Cell[] };
@@ -14,42 +15,7 @@ export type Schedule = {
   note: string;
 };
 
-// Schema bewaakt de JSON (ook na edits via het CMS): een fout laat de build falen
-// Leeg optioneel veld uit het CMS ("") telt als niet ingevuld
-const optional = <T extends z.ZodType>(schema: T) => z.preprocess((v) => v || undefined, schema.optional());
-const day = z.enum(['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag']);
-const column = z.strictObject({ day, location: optional(z.string()) });
-const slot = column.extend({ time: z.string().min(1), field: optional(z.string()), note: optional(z.string()) });
-const schedule = z
-  .strictObject({
-    title: z.string().min(1),
-    start: z.string().min(1),
-    columns: z.array(column).min(1),
-    groups: z.array(
-      z.strictObject({
-        title: z.string().min(1),
-        rows: z.array(z.strictObject({ team: z.string().min(1), slots: z.array(slot) })),
-      }),
-    ),
-    note: z.string().default(''),
-  })
-  .superRefine((s, ctx) => {
-    for (const row of s.groups.flatMap((g) => g.rows)) {
-      for (const sl of row.slots) {
-        if (row.slots.filter((x) => x.day === sl.day && x.location === sl.location).length > 1) {
-          ctx.addIssue({ code: 'custom', message: `${s.title} ${row.team}: ${sl.day} staat meer dan eens in slots` });
-        }
-        const matches = s.columns.filter((c) => c.day === sl.day && c.location === sl.location).length;
-        if (matches !== 1) {
-          ctx.addIssue({
-            code: 'custom',
-            message: `${s.title} ${row.team}: ${sl.day}${sl.location ? ` (${sl.location})` : ''} staat ${matches ? 'dubbel' : 'niet'} in columns`,
-          });
-        }
-      }
-    }
-  });
-const data = z.strictObject({ veld: schedule, zaal: schedule }).parse(json);
+const data = trainingstijden.parse(json);
 
 // Slots per team omzetten naar één cel per kolom, voor de tabel
 const toSchedule = (id: string, { groups, ...s }: z.infer<typeof schedule>): Schedule => ({

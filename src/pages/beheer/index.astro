@@ -1,0 +1,80 @@
+---
+import Beheer from '../../layouts/Beheer.astro';
+import { hasRole, type Role } from '../../lib/admin/users';
+
+export const prerender = false;
+
+const user = Astro.locals.user!;
+const sections: { href: string; title: string; text: string; role: Role }[] = [
+  { href: '/beheer/nieuws', title: 'Nieuws', text: 'Berichten schrijven, aanpassen en vastpinnen', role: 'editor' },
+  { href: '/beheer/trainingstijden', title: 'Trainingstijden', text: 'Tijden en velden voor veld en zaal', role: 'editor' },
+  { href: '/beheer/organisatie', title: 'Bestuur & commissies', text: 'Leden, taken en contactgegevens', role: 'admin' },
+  { href: '/beheer/club', title: 'Teams & Sportlink', text: 'Teams, teamcodes en poules', role: 'admin' },
+  { href: '/beheer/gebruikers', title: 'Gebruikers', text: 'Wie mag inloggen, en met welke rol', role: 'admin' },
+];
+---
+
+<Beheer title="Overzicht">
+  <h1>Hoi {user.name}</h1>
+  <p class="lead">Wat wil je aanpassen? Opgeslagen wijzigingen staan na ongeveer een minuut op de site.</p>
+  <div class="grid">
+    {
+      sections
+        .filter((s) => hasRole(user, s.role))
+        .map((s) => (
+          <a href={s.href} class="tile">
+            <span class="title">{s.title}</span>
+            <span class="text">{s.text}</span>
+          </a>
+        ))
+    }
+  </div>
+</Beheer>
+
+<style>
+  h1 {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0 0 28px;
+    color: var(--text-2);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    color: var(--ink);
+    transition: border-color 0.2s ease;
+  }
+
+  .tile:hover {
+    text-decoration: none;
+    border-color: var(--blue);
+  }
+
+  .title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--blue);
+  }
+
+  .text {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+</style>
