@@ -23,7 +23,7 @@ const news = allNews.slice(0, allNews[0]?.data.sticky ? 5 : 4);
   <main>
     <Hero />
     <div class="main container">
-      <div class="quick">
+      <div class="quick" data-reveal>
         <QuickLinks />
       </div>
       <News items={news} highlightSticky />

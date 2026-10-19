@@ -13,7 +13,7 @@ interface Props {
 const { items, heading = 'Nieuws uit de club', headingShort = 'Nieuws', highlightSticky = false } = Astro.props;
 ---
 
-<section class="news" aria-labelledby="news-title">
+<section class="news" aria-labelledby="news-title" data-reveal>
   <div class="head">
     <h2 class="heading" id="news-title">
       <span class="desktop">{heading}</span><span class="mobile">{headingShort}</span>
