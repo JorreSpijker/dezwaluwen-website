@@ -1,0 +1,46 @@
+---
+import JsonPage from '../../components/admin/JsonPage.astro';
+
+export const prerender = false;
+
+const member = {
+  'ui:title': 'Lid',
+  name: { 'ui:title': 'Naam' },
+  role: { 'ui:title': 'Rol' },
+  email: { 'ui:title': 'E-mail' },
+};
+const tasks = { 'ui:title': 'Taken', items: { 'ui:title': 'Taak' } };
+
+const uiSchema = {
+  bestuur: {
+    'ui:title': 'Bestuur',
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:title': 'Naam' },
+    email: { 'ui:title': 'E-mail' },
+    description: { 'ui:title': 'Omschrijving', 'ui:widget': 'textarea' },
+    tasksTitle: { 'ui:title': 'Titel boven de taken' },
+    tasks,
+    members: { 'ui:title': 'Bestuursleden', items: member },
+  },
+  commissies: {
+    'ui:title': 'Commissies',
+    items: {
+      'ui:title': 'Commissie',
+      id: { 'ui:title': 'ID', 'ui:help': 'Kleine letters, cijfers en -. Gebruikt in de link naar de commissie.' },
+      name: { 'ui:title': 'Naam' },
+      short: { 'ui:title': 'Afkorting' },
+      email: { 'ui:title': 'E-mail' },
+      description: { 'ui:title': 'Omschrijving', 'ui:widget': 'textarea' },
+      tasks,
+      members: { 'ui:title': 'Leden', items: member },
+    },
+  },
+};
+---
+
+<JsonPage
+  path="src/data/organisatie.json"
+  title="Bestuur & commissies"
+  intro="Wie zitten er in het bestuur en de commissies, wat doen ze en hoe bereik je ze."
+  uiSchema={uiSchema}
+/>

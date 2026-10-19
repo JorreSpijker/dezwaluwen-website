@@ -83,7 +83,7 @@ Schema's uit `trainingstijden.ts`, `club.ts`, `organisatie.ts` verhuizen naar `s
 - Rechtencheck per route: `requireRole('editor' | 'admin')`.
 → verify: account buiten lijst → "geen toegang"; ongeldige state/code → "mislukt"; zonder cookie geen toegang; Editor krijgt 403 op `club.json`, `organisatie.json` en gebruikersbeheer; gebruiker uit lijst halen blokkeert bestaande sessie binnen 60 s.
 
-### 4. GitHub-laag
+### 4. ✅ GitHub-laag
 - Lezen: inhoud + blob-sha per bestand.
 - Schrijven: meerdere bestanden in 1 commit via Git Data API (tree → commit → ref update). Nieuws + foto = 1 commit = 1 deploy.
 - Conflict: client stuurt sha's mee van wat geladen is; afwijking op `main` → 409 "iemand anders heeft dit net aangepast, herlaad".
@@ -92,7 +92,7 @@ Schema's uit `trainingstijden.ts`, `club.ts`, `organisatie.ts` verhuizen naar `s
 - Branch via `GITHUB_BRANCH`: lokaal/preview naar testbranch, productie naar `main`.
 → verify: testcommit op testbranch met juiste auteur; tweede save met oude sha geeft 409; pad buiten allowlist geweigerd.
 
-### 5. JSON-editors (club, organisatie)
+### 5. ✅ JSON-editors (club, organisatie)
 Formulier gegenereerd uit JSON Schema (react-jsonschema-form). Server valideert met zod vóór commit; fouten terug in formulier.
 → verify: wijziging opslaan geeft minimale diff; ongeldige teamcode geeft foutmelding, geen commit.
 

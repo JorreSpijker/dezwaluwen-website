@@ -1,0 +1,54 @@
+---
+// Beheerpagina voor één JSON-bestand: rechten checken, bestand laden, formulier tonen.
+import type { UiSchema } from '@rjsf/utils';
+import Beheer from '../../layouts/Beheer.astro';
+import { canAccess, jsonSchemaFor } from '../../lib/admin/access';
+import { readFile } from '../../lib/admin/repo';
+import JsonEditor from './JsonEditor';
+
+interface Props {
+  path: string;
+  title: string;
+  intro: string;
+  uiSchema?: UiSchema;
+}
+
+const { path, title, intro, uiSchema } = Astro.props;
+const allowed = canAccess(Astro.locals.user!, path);
+const file = allowed ? await readFile(path) : undefined;
+if (!allowed) Astro.response.status = 403;
+---
+
+<Beheer title={title}>
+  <a href="/beheer" class="back">← Overzicht</a>
+  <h1>{title}</h1>
+  {
+    file ? (
+      <>
+        <p class="intro">{intro}</p>
+        <JsonEditor client:load path={path} sha={file.sha} data={JSON.parse(file.content)} schema={jsonSchemaFor(path) as object} uiSchema={uiSchema} />
+      </>
+    ) : (
+      <p class="intro">Je hebt geen toegang tot dit onderdeel.</p>
+    )
+  }
+</Beheer>
+
+<style>
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 8px 0;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .intro {
+    margin: 0 0 28px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+</style>

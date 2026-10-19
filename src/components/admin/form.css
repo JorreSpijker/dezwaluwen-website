@@ -1,0 +1,229 @@
+/* Opmaak voor formulieren van @rjsf/core (Bootstrap-klassen) in de stijl van de site */
+
+.beheer-form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.beheer-form legend {
+  padding: 0;
+  margin-bottom: 12px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--blue);
+}
+
+.beheer-form fieldset fieldset legend {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.beheer-form .form-group {
+  margin-bottom: 16px;
+}
+
+.beheer-form .control-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.beheer-form .required {
+  color: var(--orange);
+  margin-left: 2px;
+}
+
+.beheer-form .form-control {
+  width: 100%;
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.beheer-form textarea.form-control {
+  min-height: 110px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.beheer-form .form-control:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 0;
+  border-color: var(--blue);
+}
+
+.beheer-form .field-description,
+.beheer-form .help-block {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Lijsten: elk item als kaart met knoppen rechts */
+.beheer-form .array-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.beheer-form .array-item .array-item {
+  background: var(--surface);
+}
+
+.beheer-form .array-item > .col-xs-9,
+.beheer-form .array-item > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.beheer-form .array-item-toolbox {
+  flex: none;
+}
+
+.beheer-form .array-item-toolbox .btn-group {
+  display: flex !important;
+  gap: 4px;
+}
+
+.beheer-form .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.beheer-form .btn:hover:not(:disabled) {
+  border-color: var(--blue);
+}
+
+.beheer-form .btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.beheer-form .btn-danger {
+  color: var(--red);
+}
+
+.beheer-form .glyphicon-arrow-up::before {
+  content: '↑';
+}
+
+.beheer-form .glyphicon-arrow-down::before {
+  content: '↓';
+}
+
+.beheer-form .glyphicon-remove::before {
+  content: '✕';
+}
+
+.beheer-form .glyphicon-copy::before {
+  content: '⧉';
+}
+
+.beheer-form .glyphicon-plus::before {
+  content: '+ Toevoegen';
+}
+
+.beheer-form .btn-add {
+  width: auto;
+}
+
+.beheer-form .array-item-add {
+  text-align: right;
+  margin-bottom: 16px;
+}
+
+/* Fouten */
+.beheer-form .errors {
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.beheer-form .errors .panel-title {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.beheer-form .errors ul,
+.beheer-form .error-detail {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.beheer-form .error-detail {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--red);
+}
+
+.beheer-form .has-error .form-control {
+  border-color: var(--red);
+}
+
+/* Opslaan: knop blijft onderaan in beeld */
+.beheer-form form > div:last-child {
+  position: sticky;
+  bottom: 0;
+  padding: 16px 0;
+  background: linear-gradient(transparent, var(--surface) 30%);
+}
+
+.beheer-form .btn-info {
+  height: auto;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 700;
+}
+
+.save-status {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--blue-soft);
+  color: var(--blue-dark);
+}
+
+.save-status.is-ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.save-status.is-error {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.save-status p,
+.save-status ul {
+  margin: 0;
+}
+
+.save-status ul {
+  margin-top: 6px;
+  padding-left: 18px;
+}

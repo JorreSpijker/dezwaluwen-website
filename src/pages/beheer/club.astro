@@ -1,0 +1,30 @@
+---
+import JsonPage from '../../components/admin/JsonPage.astro';
+
+export const prerender = false;
+
+const uiSchema = {
+  clubCode: { 'ui:title': 'Clubcode', 'ui:help': 'Sportlink-clubcode. Alleen wijzigen als je zeker weet wat je doet.' },
+  teams: {
+    'ui:title': 'Teams',
+    items: {
+      'ui:title': 'Team',
+      short: { 'ui:title': 'Afkorting', 'ui:help': 'Bijv. J5. Wordt ook de link /teams/j5/.' },
+      name: { 'ui:title': 'Naam' },
+      category: { 'ui:title': 'Categorie', 'ui:help': 'Bijv. Senioren of Jeugd' },
+      teamCode: { 'ui:title': 'Teamcode', 'ui:help': 'Uit Sportlink, begint met T' },
+      pools: {
+        'ui:title': 'Poules',
+        items: { 'ui:title': 'Poule', name: { 'ui:title': 'Naam' }, code: { 'ui:title': 'Code' } },
+      },
+    },
+  },
+};
+---
+
+<JsonPage
+  path="src/data/club.json"
+  title="Teams & Sportlink"
+  intro="Teams op de site en hun codes in Sportlink. Programma, uitslagen en standen worden hiermee opgehaald."
+  uiSchema={uiSchema}
+/>
