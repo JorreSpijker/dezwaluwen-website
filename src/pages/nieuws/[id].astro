@@ -1,0 +1,275 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import News from '../../components/News.astro';
+import Footer from '../../components/Footer.astro';
+import StickyCta from '../../components/StickyCta.astro';
+import { linkHref, menu } from '../../data/menu';
+import { formatDateFull, getNews, type NewsEntry } from '../../lib/news';
+
+export async function getStaticPaths() {
+  const news = await getNews();
+  return news.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry, more: news.filter((n) => n.id !== entry.id).slice(0, 2) },
+  }));
+}
+
+interface Props {
+  entry: NewsEntry;
+  more: NewsEntry[];
+}
+
+const { entry, more } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+// Proefles-promo uit het menu "Nieuw lid?"
+const promo = menu[0];
+---
+
+<Base title={`${data.title} — KV de Zwaluwen`} description={`${data.category}: ${data.title}`}>
+  <Header />
+  <main>
+    <article class="article container">
+      <header class="head">
+        <nav class="crumbs" aria-label="Kruimelpad">
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <a href="/nieuws/">Nieuws</a>
+        </nav>
+        <p class="meta">
+          <time datetime={data.date.toISOString().slice(0, 10)}>{formatDateFull(data.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span class="category">{data.category}</span>
+        </p>
+        <h1 class="title">{data.title}</h1>
+      </header>
+
+      <div class="photo">
+        <Image src={data.image} alt={data.imageAlt} loading="eager" fetchpriority="high" />
+      </div>
+
+      <div class="body">
+        <div class="prose">
+          <Content />
+        </div>
+
+        <aside class="promo" aria-label="Gratis proefles">
+          <div class="promo-title">{promo.promoTitle}</div>
+          <p class="promo-text">{promo.promoText}</p>
+          <a href={linkHref(promo.promoCta)} class="pill promo-cta">{promo.promoCta}</a>
+        </aside>
+      </div>
+    </article>
+
+    <div class="more container">
+      <News items={more} heading="Meer nieuws" headingShort="Meer nieuws" />
+    </div>
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  /* Ruimte voor het logo-embleem dat onder de header uitsteekt */
+  .article {
+    padding-top: 88px;
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 900px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .meta {
+    margin: 0;
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .category {
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(36px, 4.4vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+    text-wrap: balance;
+  }
+
+  .photo {
+    margin-top: 40px;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--placeholder);
+  }
+
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: minmax(0, 680px) 340px;
+    justify-content: space-between;
+    gap: 48px;
+    padding-top: 48px;
+    padding-bottom: 64px;
+  }
+
+  .prose {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 20px;
+  }
+
+  .prose :global(p:first-child) {
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .prose :global(h2) {
+    margin: 40px 0 12px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  .prose :global(li) {
+    margin-bottom: 6px;
+  }
+
+  .prose :global(blockquote) {
+    margin: 28px 0;
+    padding: 4px 0 4px 22px;
+    border-left: 4px solid var(--orange);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.35;
+    color: var(--blue);
+  }
+
+  .prose :global(blockquote p) {
+    margin: 0;
+  }
+
+  .promo {
+    align-self: start;
+    position: sticky;
+    top: 132px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .promo-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--blue);
+  }
+
+  .promo-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .promo-cta {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+  }
+
+  .more {
+    padding-top: 64px;
+    padding-bottom: 64px;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .article {
+      padding-top: 56px;
+    }
+
+    .head {
+      gap: 12px;
+    }
+
+    .photo {
+      margin-top: 28px;
+      border-radius: 14px;
+    }
+
+    .body {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      padding-top: 28px;
+      padding-bottom: 40px;
+    }
+
+    .prose {
+      font-size: 17px;
+    }
+
+    .prose :global(p:first-child) {
+      font-size: 19px;
+    }
+
+    .prose :global(h2) {
+      margin-top: 32px;
+      font-size: 24px;
+    }
+
+    .promo {
+      position: static;
+    }
+
+    .more {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+  }
+</style>

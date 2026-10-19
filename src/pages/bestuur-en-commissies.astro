@@ -1,0 +1,504 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { linkHref, menu } from '../data/menu';
+import { initials } from '../data/memberwizard';
+import organisatie from '../data/organisatie.json';
+
+const { bestuur, commissies } = organisatie;
+// Promo "Help je mee?" uit het menu Club
+const promo = menu[2];
+---
+
+<Base
+  title="Bestuur & commissies — KV de Zwaluwen"
+  description="Wie zitten er in het bestuur en de commissies van KV de Zwaluwen, en hoe bereik je ze?"
+>
+  <Header />
+  <main class="page container">
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Club</span>
+      </nav>
+      <h1 class="title">Bestuur & commissies</h1>
+      <p class="lead">
+        De Zwaluwen draait volledig op vrijwilligers. Hier zie je wie er in het bestuur en de commissies zitten, wat ze doen en hoe je ze bereikt.
+      </p>
+      <nav class="jump" aria-label="Ga naar">
+        <a href={`#${bestuur.id}`}>{bestuur.name}</a>
+        {commissies.map((c) => <a href={`#${c.id}`}>{c.name}</a>)}
+      </nav>
+    </header>
+
+    <section class="board" id={bestuur.id} aria-labelledby="bestuur-title">
+      <div class="board-text">
+        <h2 class="board-title" id="bestuur-title">{bestuur.name}</h2>
+        <p>{bestuur.description}</p>
+        <h3 class="board-subtitle">{bestuur.tasksTitle}</h3>
+        <ul class="board-tasks">
+          {bestuur.tasks.map((task) => <li>{task}</li>)}
+        </ul>
+        <a href={`mailto:${bestuur.email}`} class="pill mail">Mail het bestuur</a>
+      </div>
+      <ul class="board-members">
+        {
+          bestuur.members.map((member) => (
+            <li class="person">
+              <span class="avatar" aria-hidden="true">
+                {initials(member.name)}
+              </span>
+              <span class="person-text">
+                <span class="person-name">{member.name}</span>
+                <span class="person-role">{member.role}</span>
+                <a href={`mailto:${member.email}`} class="person-mail">
+                  {member.email}
+                </a>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="committees" aria-labelledby="commissies-title">
+      <h2 class="section-title" id="commissies-title">Commissies</h2>
+      <div class="grid">
+        {
+          commissies.map((c) => (
+            <article class="committee" id={c.id} aria-labelledby={`${c.id}-title`}>
+              <h3 class="committee-title" id={`${c.id}-title`}>
+                {c.name}
+                {c.short && <span class="short">{c.short}</span>}
+              </h3>
+              <p class="committee-text">{c.description}</p>
+
+              {c.tasks.length > 0 && (
+                <details>
+                  <summary>Wat doen we?</summary>
+                  <ul>
+                    {c.tasks.map((task) => (
+                      <li>{task}</li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+
+              <ul class="members">
+                {c.members.map((member) => (
+                  <li>
+                    <span class="member-name">{member.name}</span>
+                    <span class="member-role">{member.role}</span>
+                    {member.email && member.email !== c.email && (
+                      <a href={`mailto:${member.email}`} class="member-mail">
+                        {member.email}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              <a href={`mailto:${c.email}`} class="committee-mail">
+                {c.email}
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="cta" aria-label={promo.promoTitle}>
+      <div>
+        <h2 class="cta-title">{promo.promoTitle}</h2>
+        <p>{promo.promoText}</p>
+      </div>
+      <a href={linkHref(promo.promoCta)} class="pill">{promo.promoCta}</a>
+    </section>
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0;
+    max-width: 760px;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .jump {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .jump a {
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .jump a:hover {
+    background: var(--blue-muted);
+    text-decoration: none;
+  }
+
+  /* Ankers niet onder de vaste header laten vallen */
+  [id] {
+    scroll-margin-top: 130px;
+  }
+
+  /* Bestuur */
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 40px;
+    padding: 36px;
+    border-radius: 20px;
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .board-text {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .board-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 36px;
+  }
+
+  .board-text p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .board-subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue-muted);
+  }
+
+  .board-tasks {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .mail {
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+
+  .board-members {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-content: start;
+  }
+
+  .person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .avatar {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 17px;
+  }
+
+  .person-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .person-name {
+    font-weight: 700;
+  }
+
+  .person-role {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .person-mail {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+
+  /* Commissies */
+  .committees {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .section-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 36px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+
+  .committee {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .committee-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--blue);
+  }
+
+  .short {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--blue-soft);
+    font-family: var(--font-body);
+    font-size: 13px;
+  }
+
+  .committee-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  details {
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 0 16px;
+  }
+
+  summary {
+    padding: 12px 0;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    color: var(--orange);
+    font-weight: 700;
+  }
+
+  details[open] summary::after {
+    content: '–';
+  }
+
+  details ul {
+    margin: 0 0 14px;
+    padding-left: 18px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .members {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .members li {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .member-name {
+    font-weight: 700;
+  }
+
+  .member-role {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .member-mail {
+    font-size: 14px;
+  }
+
+  .committee-mail {
+    align-self: flex-start;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .committee-mail:hover {
+    background: var(--blue-muted);
+    text-decoration: none;
+  }
+
+  /* Oproep vrijwilligers */
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 32px 36px;
+    border-radius: 20px;
+    background: var(--shop-bg);
+  }
+
+  .cta-title {
+    margin: 0 0 6px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 28px;
+  }
+
+  .cta p {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  .cta .pill {
+    flex: none;
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 36px;
+    }
+
+    .lead {
+      font-size: 17px;
+    }
+
+    .board {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .board-title,
+    .section-title {
+      font-size: 28px;
+    }
+
+    .board-members,
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .committee {
+      padding: 22px;
+    }
+
+    .cta {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px;
+    }
+  }
+</style>

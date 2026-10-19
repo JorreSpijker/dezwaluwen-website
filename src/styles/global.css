@@ -1,0 +1,124 @@
+@import '@fontsource/archivo/400.css';
+@import '@fontsource/archivo/500.css';
+@import '@fontsource/archivo/600.css';
+@import '@fontsource/archivo/700.css';
+@import '@fontsource/schibsted-grotesk/700.css';
+
+:root {
+  --blue: #005daa;
+  --blue-dark: #003f75;
+  --blue-soft: #e8f0fa;
+  --blue-muted: #cfe0f3;
+  --orange: #ee5a36;
+  --green: #15803d;
+  --green-soft: #e3f4e8;
+  --yellow: #a16207;
+  --yellow-soft: #fdf3d3;
+  --red: #b91c1c;
+  --red-soft: #fde8e8;
+  --shop-bg: #fff1ec;
+  --shop-photo-bg: #fae4dc;
+  --ink: #111827;
+  --text: #3b4252;
+  --text-2: #4b5563;
+  --muted: #6b7280;
+  --faint: #9ca3af;
+  --surface: #f4f6fa;
+  --line: #e3e7ee;
+  --line-soft: #eef1f5;
+  --placeholder: #e6ecf3;
+
+  --font-body: 'Archivo', sans-serif;
+  --font-head: 'Schibsted Grotesk', sans-serif;
+
+  --gutter: clamp(20px, 4.4vw, 56px);
+  --max: 1280px;
+  --card-shadow: 0 12px 32px rgba(10, 34, 64, 0.14);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue-dark);
+  text-decoration: underline;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+
+.container {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 12px 22px;
+  background: var(--orange);
+  color: #fff;
+}
+
+.pill:hover {
+  color: #fff;
+  text-decoration: none;
+  filter: brightness(0.94);
+}
+
+.eyebrow {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

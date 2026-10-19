@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import ScheduleTable from '../components/ScheduleTable.astro';
+import Footer from '../components/Footer.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { veld, zaal } from '../data/trainingstijden';
+---
+
+<Base title="Trainingstijden — KV de Zwaluwen" description="Trainingstijden van alle teams van KV de Zwaluwen, op het veld en in de zaal.">
+  <Header />
+  <main class="page container">
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Voor ouders & leden</span>
+      </nav>
+      <h1 class="title">Trainingstijden</h1>
+      <p class="lead">
+        Wanneer en waar traint jouw team? Op het veld trainen we op Sportpark Hengelder, in het zaalseizoen bij Heerenmäten en De Cluse.
+      </p>
+    </header>
+
+    <ScheduleTable schedule={veld} />
+    <ScheduleTable schedule={zaal} />
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 760px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 40px;
+    }
+
+    .lead {
+      font-size: 17px;
+    }
+  }
+</style>

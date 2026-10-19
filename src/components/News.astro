@@ -1,0 +1,85 @@
+---
+import NewsCard from './NewsCard.astro';
+import type { NewsEntry } from '../lib/news';
+
+interface Props {
+  items: NewsEntry[];
+  heading?: string;
+  headingShort?: string;
+  // Vastgepinde berichten groot uitlichten
+  highlightSticky?: boolean;
+}
+
+const { items, heading = 'Nieuws uit de club', headingShort = 'Nieuws', highlightSticky = false } = Astro.props;
+---
+
+<section class="news" aria-labelledby="news-title">
+  <div class="head">
+    <h2 class="heading" id="news-title">
+      <span class="desktop">{heading}</span><span class="mobile">{headingShort}</span>
+    </h2>
+    <a href="/nieuws/" class="all">Alle nieuws →</a>
+  </div>
+
+  <div class="grid">
+    {items.map((item) => <NewsCard item={item} featured={highlightSticky && item.data.sticky} />)}
+  </div>
+</section>
+
+<style>
+  .news {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .heading {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 40px;
+  }
+
+  .all {
+    font-weight: 600;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .mobile {
+    display: none;
+  }
+
+  @media (max-width: 959px) {
+    .desktop {
+      display: none;
+    }
+
+    .mobile {
+      display: inline;
+    }
+
+    .news {
+      gap: 18px;
+    }
+
+    .heading {
+      font-size: 28px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+  }
+</style>

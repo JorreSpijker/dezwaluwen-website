@@ -1,0 +1,152 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import Footer from '../../components/Footer.astro';
+import StickyCta from '../../components/StickyCta.astro';
+import { getNews } from '../../lib/news';
+
+const news = await getNews();
+// Categorieën in volgorde van het meest recente bericht
+const categories = [...new Set(news.map((item) => item.data.category))];
+---
+
+<Base title="Nieuws — KV de Zwaluwen" description="Het laatste nieuws van KV de Zwaluwen: wedstrijden, jeugd, clubshop en de club.">
+  <Header />
+  <main class="page container" data-news-overview>
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Nieuws</span>
+      </nav>
+      <h1 class="title">Nieuws</h1>
+      <p class="lead">Verslagen, aankondigingen en alles wat er speelt bij de Zwaluwen.</p>
+
+      <div class="filters" role="group" aria-label="Filter op categorie">
+        <button type="button" class="filter" aria-pressed="true" data-filter="">Alles</button>
+        {
+          categories.map((category) => (
+            <button type="button" class="filter" aria-pressed="false" data-filter={category}>
+              {category}
+            </button>
+          ))
+        }
+      </div>
+    </header>
+
+    <div class="grid" aria-live="polite">
+      {news.map((item) => <NewsCard item={item} featured={item.data.sticky} />)}
+    </div>
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-news-overview]')!;
+  const filters = page.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = page.querySelectorAll<HTMLElement>('.grid [data-category]');
+
+  filters.forEach((filter) =>
+    filter.addEventListener('click', () => {
+      const category = filter.dataset.filter;
+      filters.forEach((f) => f.setAttribute('aria-pressed', String(f === filter)));
+      items.forEach((item) => (item.hidden = Boolean(category) && item.dataset.category !== category));
+    }),
+  );
+</script>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .filters {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter {
+    padding: 9px 18px;
+    border: 2px solid var(--blue);
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--blue);
+  }
+
+  .filter[aria-pressed='true'] {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px 24px;
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 28px;
+    }
+
+    .lead {
+      font-size: 17px;
+    }
+
+    .filter {
+      padding: 7px 14px;
+      font-size: 14px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+  }
+</style>

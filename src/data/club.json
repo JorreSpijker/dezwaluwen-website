@@ -1,0 +1,17 @@
+{
+  "clubCode": "NCX35M2",
+  "teams": [
+    {"short": "S1", "name": "Zwaluwen 1", "category": "Senioren", "teamCode": "T1488927798", "pools": [{"name": "3-05", "code": 103125}]},
+    {"short": "S2", "name": "Zwaluwen 2", "category": "Senioren", "teamCode": "T1170084640", "pools": [{"name": "S-038", "code": 103470}]},
+    {"short": "S3", "name": "Rivalen/Zwaluwen 3", "category": "Senioren", "teamCode": "T663759421", "pools": [{"name": "S-042", "code": 103474}]},
+    {"short": "MW1", "name": "Zwaluwen MW1", "category": "Senioren", "teamCode": "T536822880", "pools": [{"name": "MW-22", "code": 103612}]},
+    {"short": "J1", "name": "Zwaluwen J1", "category": "Jeugd", "teamCode": "T1783089208", "pools": [{"name": "Ro-045", "code": 103727}]},
+    {"short": "J2", "name": "Zwaluwen J2", "category": "Jeugd", "teamCode": "T567689133", "pools": [{"name": "Ro-048", "code": 103730}]},
+    {"short": "J3", "name": "Zwaluwen J3", "category": "Jeugd", "teamCode": "T2090937638", "pools": [{"name": "Or-035", "code": 103872}]},
+    {"short": "J4", "name": "Zwaluwen J4", "category": "Jeugd", "teamCode": "T976231643", "pools": [{"name": "Ge-036", "code": 104001}]},
+    {"short": "J5", "name": "Zwaluwen J5", "category": "Jeugd", "teamCode": "T1904411212", "pools": [{"name": "Ge-037", "code": 104002}]},
+    {"short": "J6", "name": "Zwaluwen J6", "category": "Jeugd", "teamCode": "T1326608833", "pools": [{"name": "Gr4-041", "code": 104234}]},
+    {"short": "J7", "name": "Zwaluwen J7", "category": "Jeugd", "teamCode": "T178087802", "pools": [{"name": "Gr4-040", "code": 104233}]},
+    {"short": "J8", "name": "Zwaluwen J8", "category": "Jeugd", "teamCode": "T1080841967", "pools": [{"name": "Bl4-104", "code": 104542}]}
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "bestuur": {
+    "id": "bestuur",
+    "name": "Bestuur",
+    "email": "bestuur@dezwaluwen.nl",
+    "description": "Het bestuur bestaat uit een voorzitter, secretaris, penningmeester en twee algemene leden. Elk bestuurslid is aanspreekpunt voor één of meer commissies. Het bestuur vergadert elke maand. Vragen, ideeën en tips zijn welkom bij de secretaris.",
+    "tasksTitle": "Waar werkt het bestuur nu aan?",
+    "tasks": [
+      "Ledenwerving",
+      "KNKV-trajecten \"Besturen met een visie\" en \"Meer leden in korte tijd\"",
+      "Professionalisering: contact met sponsoren, gemeente en andere korfbalorganisaties",
+      "Vrijwilligersbeleid",
+      "Opleiding"
+    ],
+    "members": [
+      { "name": "Bram Wolbrink", "role": "Voorzitter", "email": "voorzitter@dezwaluwen.nl" },
+      { "name": "Alineke Sluis", "role": "Secretaris", "email": "secretaris@dezwaluwen.nl" },
+      { "name": "Anne Teubler", "role": "Penningmeester", "email": "penningmeester@dezwaluwen.nl" },
+      { "name": "Johan Peter Post", "role": "Algemeen lid", "email": "bestuur@dezwaluwen.nl" },
+      { "name": "Eveline Post", "role": "Algemeen lid", "email": "bestuur@dezwaluwen.nl" }
+    ]
+  },
+  "commissies": [
+    {
+      "id": "tc",
+      "name": "Technische commissie",
+      "short": "TC",
+      "email": "tc@dezwaluwen.nl",
+      "description": "De TC zorgt dat alles op korfbaltechnisch gebied goed verloopt, met als hoofdtaak het goede verloop van de competitie. De TC is verantwoordelijk voor het technisch beleid en werkt nauw samen met de jeugdcommissie.",
+      "tasks": [
+        "Selectie en ondersteuning van de hoofdtrainer",
+        "Scheidsrechters en jeugdwedstrijdleiders regelen en begeleiden",
+        "Seniorenteams samenstellen en opgeven bij de bond",
+        "Oefenwedstrijden voor senioren regelen",
+        "Trainingstijden voor veld en zaal",
+        "Wedstrijdsecretarissen senioren ondersteunen",
+        "Contact met verzorgers en begeleiders",
+        "Zo nodig de jurytafel coördineren"
+      ],
+      "members": [
+        { "name": "Jorre Spijker", "role": "Voorzitter · aanspreekpunt S1, S2 en trainers senioren" },
+        { "name": "Jurjen Hofman", "role": "Aanspreekpunt S3 en MW1 · spelregelcursus · oefenwedstrijden senioren" },
+        { "name": "Kim Elfring", "role": "Wedstrijdsecretariaat senioren · zaalplanning en huur", "email": "kim@dezwaluwen.nl" },
+        { "name": "Jeffrey Hermans", "role": "Scheidsrechterszaken", "email": "scheidsrechter@dezwaluwen.nl" },
+        { "name": "Roel van Leeuwen", "role": "Technisch beleid · spelregelcursus" }
+      ]
+    },
+    {
+      "id": "jc",
+      "name": "Jeugdcommissie",
+      "short": "JC",
+      "email": "jc@dezwaluwen.nl",
+      "description": "De JC zorgt voor het goede verloop van de competitie bij de jeugdteams, in de juiste teamsamenstelling. Daarnaast begeleidt de JC de jeugdtrainers. De JC werkt nauw samen met de technische commissie.",
+      "tasks": [
+        "Trainers en coaches regelen en begeleiden",
+        "Jeugdteams samenstellen en opgeven bij de bond",
+        "Oefenwedstrijden regelen",
+        "Trainingstijden voor veld en zaal",
+        "Wedstrijdsecretarissen jeugd ondersteunen",
+        "Contact tussen scholen en de vereniging",
+        "Speler en jeugdvrijwilliger van het jaar aanwijzen"
+      ],
+      "members": [
+        { "name": "Maarten Willemsen", "role": "Voorzitter" },
+        { "name": "Eva ter Harmsel", "role": "Algemeen lid" },
+        { "name": "Maarten Kuppens", "role": "Trainersbegeleider" },
+        { "name": "Marcel Maassen", "role": "Ledenwerving en schoolkorfbaltoernooi" },
+        { "name": "Robert Aaftink", "role": "Algemeen lid · aanspreekpunt ouders" },
+        { "name": "Bart Ross", "role": "Algemeen lid · aanspreekpunt ouders" }
+      ]
+    },
+    {
+      "id": "ledenwerving",
+      "name": "Ledenwervingcommissie",
+      "email": "ledenwerving@dezwaluwen.nl",
+      "description": "Werft nieuwe leden en organiseert onder meer het schoolkorfbaltoernooi.",
+      "tasks": [],
+      "members": [
+        { "name": "Marcel Maassen", "role": "Voorzitter" },
+        { "name": "Bertjan Bleumink", "role": "Algemeen lid" }
+      ]
+    },
+    {
+      "id": "kantine",
+      "name": "Kantinecommissie",
+      "short": "KC",
+      "email": "kantine@dezwaluwen.nl",
+      "description": "De KC beheert de kantine bij het veld en de kantine in sporthal Heerenmäten. De kantine is de spil rond trainingen, wedstrijden, vergaderingen en feesten, en een belangrijke inkomstenbron voor de club.",
+      "tasks": [
+        "Barpersoneel inroosteren",
+        "Inkoop en verkoop",
+        "Schoonmaak van kantine en kleedkamers",
+        "Beheer van de kas, de sleutel en de agenda"
+      ],
+      "members": [
+        { "name": "Barrie Meek", "role": "Voorzitter · inkoop · kasbeheer", "email": "barrie@dezwaluwen.nl" },
+        { "name": "GD ter Harmsel", "role": "Inkoop" },
+        { "name": "Remko Schaap", "role": "Kantinerooster" }
+      ]
+    },
+    {
+      "id": "sponsoring",
+      "name": "Sponsoringcommissie",
+      "email": "sponsoring@dezwaluwen.nl",
+      "description": "Verantwoordelijk voor alle sponsoractiviteiten. Bedrijven kunnen de Zwaluwen sponsoren en tegelijk hun product of dienst onder de aandacht brengen. Vraag gerust naar de sponsorbrochure of een vrijblijvend gesprek.",
+      "tasks": [
+        "Kledingsponsor (shirts, trainingspakken)",
+        "Tassponsor",
+        "Reclamebord",
+        "Advertentie in het clubblad of op de website",
+        "Materiaalsponsor (ballen, korven)"
+      ],
+      "members": [
+        { "name": "Bertjan Bleumink", "role": "Algemeen lid" },
+        { "name": "Xanne Ketelaar", "role": "Algemeen lid · aanspreekpunt binnen de vereniging" },
+        { "name": "Kasper Goorman", "role": "Algemeen lid" }
+      ]
+    },
+    {
+      "id": "redactie",
+      "name": "Redactie",
+      "email": "redactie@dezwaluwen.nl",
+      "description": "De redactie verzorgt de interne communicatie: wekelijks content op social media, maandelijks de Zwaluwenpost en directe berichten via de WhatsApp community.",
+      "tasks": [],
+      "members": [
+        { "name": "Eline ter Harmsel", "role": "Voorzitter · social media", "email": "eline@dezwaluwen.nl" },
+        { "name": "Rianne Smeenk", "role": "Social media" },
+        { "name": "Willem ter Harmsel", "role": "Video" },
+        { "name": "Thomas Bleumink", "role": "Video" },
+        { "name": "Ilse Hülkenberg", "role": "Fotografie" },
+        { "name": "Roan van Leeuwen", "role": "Fotografie" },
+        { "name": "Daan Elfring", "role": "Website en Zwaluwenpost" },
+        { "name": "Jorre Spijker", "role": "Website en Zwaluwenpost", "email": "jorre@dezwaluwen.nl" }
+      ]
+    },
+    {
+      "id": "kledingfonds",
+      "name": "Kledingfonds",
+      "email": "kledingfonds@dezwaluwen.nl",
+      "description": "Het kledingfonds zorgt dat alle leden hetzelfde trainingspak en wedstrijdshirt hebben. Daarvoor betaal je jaarlijks in januari € 10; nieuwe leden betalen eenmalig € 30 bij aanmelding.",
+      "tasks": [],
+      "members": [
+        { "name": "Mirjam van der Stelt", "role": "Algemeen lid" },
+        { "name": "Yara Willemsen", "role": "Algemeen lid" }
+      ]
+    },
+    {
+      "id": "onderhoud",
+      "name": "Onderhoudscommissie",
+      "short": "OC",
+      "email": "onderhoud@dezwaluwen.nl",
+      "description": "Zorgt voor de aanschaf en het onderhoud van al het spelmateriaal, de gebouwen, de speeltoestellen en de technische installaties. Bij de overgang tussen veld en zaal verzorgt de OC het transport van het materiaal. Je deelt je tijd grotendeels zelf in.",
+      "tasks": [
+        "Palen, korven, ballen en ander spelmateriaal",
+        "Gebouwen en speeltoestellen voor de jeugd",
+        "Verwarming, beveiliging en scorebord",
+        "Materiaal verdelen bij de wissel tussen veld en zaal"
+      ],
+      "members": [
+        { "name": "Eelke Spijker", "role": "Algemeen lid", "email": "eelke@dezwaluwen.nl" },
+        { "name": "GD ter Harmsel", "role": "Algemeen lid", "email": "gd@dezwaluwen.nl" },
+        { "name": "Koen van der Veer", "role": "Algemeen lid" }
+      ]
+    },
+    {
+      "id": "activiteiten",
+      "name": "Activiteitencommissie",
+      "short": "AC",
+      "email": "ac@dezwaluwen.nl",
+      "description": "De AC organiseert de clubactiviteiten, van de aankleding en hapjes tot de uitnodigingen. Ideeën en feedback zijn altijd welkom.",
+      "tasks": [
+        "Sinterklaas, Halloween en kerstknutselen voor de jeugd",
+        "Nieuwjaarsborrel en kerstgala",
+        "Carnaval en bingo",
+        "Familie- en vriendentoernooi",
+        "Zwaluwen got talent"
+      ],
+      "members": [
+        { "name": "Sjoerd Goorman", "role": "Voorzitter · communicatie" },
+        { "name": "Dominique Bosman", "role": "Communicatie · feestcommissie" },
+        { "name": "Jade Maassen", "role": "Feestcommissie" },
+        { "name": "Esther Noppen", "role": "Algemeen lid" },
+        { "name": "Tanja Bosman", "role": "Algemeen lid" },
+        { "name": "Cindy Schaap", "role": "Algemeen lid" }
+      ]
+    }
+  ]
+}

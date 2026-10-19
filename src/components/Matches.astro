@@ -1,0 +1,213 @@
+---
+import { getMatches } from '../lib/matches';
+
+const { program, results } = await getMatches();
+---
+
+<div class="card" data-matches>
+  <div class="card-head">
+    <div class="tabs" role="tablist" aria-label="Wedstrijden">
+      <button class="tab" type="button" role="tab" id="tab-prog" aria-controls="panel-prog" aria-selected="true" data-tab="prog">
+        Programma
+      </button>
+      <button class="tab" type="button" role="tab" id="tab-res" aria-controls="panel-res" aria-selected="false" data-tab="res">
+        Uitslagen
+      </button>
+    </div>
+    <a href="#" class="all">Alles →</a>
+  </div>
+
+  <div role="tabpanel" id="panel-prog" aria-labelledby="tab-prog" data-panel="prog">
+    {program.length === 0 && <p class="empty">Geen wedstrijden de komende week.</p>}
+    {
+      program.map((day) => (
+        <div class="day">
+          <div class="day-label">{day.label}</div>
+          {day.matches.map((m) => (
+            <div class="row row-prog">
+              <div class="time">{m.time}</div>
+              <div class:list={['team', { own: m.homeOwn }]}>{m.home}</div>
+              <div class:list={['team', { own: m.awayOwn }]}>{m.away}</div>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  <div role="tabpanel" id="panel-res" aria-labelledby="tab-res" hidden data-panel="res">
+    {results.length === 0 && <p class="empty">Geen uitslagen van de afgelopen week.</p>}
+    {
+      results.map((day) => (
+        <div class="day">
+          <div class="day-label">{day.label}</div>
+          {day.matches.map((m) => (
+            <div class="row row-res">
+              <div class:list={['team', { own: m.homeOwn }]}>{m.home}</div>
+              <div class:list={['score', m.result]}>{m.score}</div>
+              <div class:list={['team', 'away', { own: m.awayOwn }]}>{m.away}</div>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const card = document.querySelector<HTMLElement>('[data-matches]')!;
+  const tabs = card.querySelectorAll<HTMLButtonElement>('[data-tab]');
+
+  tabs.forEach((tab) =>
+    tab.addEventListener('click', () => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+      card.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== tab.dataset.tab));
+    }),
+  );
+</script>
+
+<style>
+  .card {
+    background: #fff;
+    color: var(--ink);
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: var(--matches-max-height, none);
+  }
+
+  /* Lange lijst scrolt binnen de kaart, tabs blijven staan */
+  [role='tabpanel'] {
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .card-head {
+    background: var(--blue);
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .tab[aria-selected='true'] {
+    background: #fff;
+    color: var(--blue);
+  }
+
+  .all {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--blue-muted);
+  }
+
+  .all:hover {
+    color: #fff;
+  }
+
+  .empty {
+    margin: 0;
+    padding: 18px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .day-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface);
+    padding: 8px 18px;
+  }
+
+  .row {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+    padding: 9px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+
+  .row-prog {
+    grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .row-res {
+    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+  }
+
+  .time {
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .team {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .team.own {
+    font-weight: 700;
+  }
+
+  .away {
+    text-align: right;
+  }
+
+  .score {
+    font-weight: 700;
+    color: var(--blue);
+    text-align: center;
+    background: var(--blue-soft);
+    border-radius: 6px;
+    padding: 3px 0;
+  }
+
+  .score.win {
+    color: var(--green);
+    background: var(--green-soft);
+  }
+
+  .score.draw {
+    color: var(--yellow);
+    background: var(--yellow-soft);
+  }
+
+  .score.loss {
+    color: var(--red);
+    background: var(--red-soft);
+  }
+
+  @media (max-width: 959px) {
+    .card-head {
+      padding: 14px 16px;
+    }
+
+    .row {
+      padding: 9px 14px;
+      font-size: 13px;
+    }
+  }
+</style>

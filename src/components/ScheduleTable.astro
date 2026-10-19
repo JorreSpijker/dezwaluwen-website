@@ -1,0 +1,257 @@
+---
+import type { Schedule } from '../data/trainingstijden';
+
+interface Props {
+  schedule: Schedule;
+}
+
+const { schedule } = Astro.props;
+const headingId = `schedule-${schedule.id}`;
+---
+
+<section class="schedule" aria-labelledby={headingId}>
+  <div class="head">
+    <h2 class="title" id={headingId}>{schedule.title}</h2>
+    <span class="start">Vanaf {schedule.start}</span>
+  </div>
+
+  <div class="scroll" tabindex="0" role="region" aria-labelledby={headingId}>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col" class="team">Team</th>
+          {
+            schedule.columns.map((col) => (
+              <th scope="col">
+                <span class="day">{col.day}</span>
+                {col.location && <span class="location">{col.location}</span>}
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      {
+        schedule.groups.map((group) => (
+          <tbody>
+            <tr class="group">
+              <th scope="colgroup" colspan={schedule.columns.length + 1}>
+                <span class="group-label">{group.title}</span>
+              </th>
+            </tr>
+            {group.rows.map((row) => (
+              <tr>
+                <th scope="row" class="team">
+                  {row.team}
+                </th>
+                {row.cells.map((cell) =>
+                  cell ? (
+                    <td>
+                      <span class="time">{cell.time}</span>
+                      {(cell.field || cell.note) && (
+                        <span class="extra">
+                          {cell.field && <span class="field">{cell.field}</span>}
+                          {cell.note && <span class="note">{cell.note}</span>}
+                        </span>
+                      )}
+                    </td>
+                  ) : (
+                    <td class="empty">
+                      <span aria-hidden="true">—</span>
+                      <span class="sr-only">Geen training</span>
+                    </td>
+                  ),
+                )}
+              </tr>
+            ))}
+          </tbody>
+        ))
+      }
+    </table>
+  </div>
+
+  <p class="note-text">{schedule.note}</p>
+</section>
+
+<style>
+  .schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 36px;
+  }
+
+  .start {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    color: var(--blue);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* relative: houdt ook absoluut gepositioneerde sr-only tekst binnen de scrollcontainer */
+  .scroll {
+    position: relative;
+    overflow-x: auto;
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 15px;
+  }
+
+  thead th {
+    background: var(--blue);
+    color: #fff;
+    text-align: left;
+    padding: 14px 18px;
+    white-space: nowrap;
+  }
+
+  .day {
+    display: block;
+    font-weight: 700;
+  }
+
+  .location {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--blue-muted);
+  }
+
+  .group th {
+    padding: 8px 18px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  /* Groeplabel blijft zichtbaar bij horizontaal scrollen */
+  .group-label {
+    position: sticky;
+    left: 18px;
+  }
+
+  tbody tr:not(.group) {
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  tbody tr:not(.group):hover {
+    background: #fafbfd;
+  }
+
+  td,
+  tbody th {
+    padding: 12px 18px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  /* Teamkolom blijft staan bij horizontaal scrollen */
+  .team {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    text-align: left;
+    font-weight: 700;
+    background: inherit;
+  }
+
+  tbody .team {
+    background: #fff;
+    color: var(--blue);
+  }
+
+  .time {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .extra {
+    display: inline-flex;
+    gap: 6px;
+    margin-left: 10px;
+  }
+
+  .field,
+  .note {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .field {
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+
+  .note {
+    background: #fff1ec;
+    color: #b8401f;
+  }
+
+  .empty {
+    color: var(--faint);
+  }
+
+  .note-text {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 959px) {
+    .title {
+      font-size: 28px;
+    }
+
+    .scroll {
+      border-radius: 14px;
+    }
+
+    table {
+      font-size: 14px;
+    }
+
+    thead th,
+    td,
+    tbody th,
+    .group th {
+      padding-inline: 12px;
+    }
+
+    .group-label {
+      left: 12px;
+    }
+
+    /* Veld/notitie onder de tijd om breedte te sparen */
+    .extra {
+      display: flex;
+      margin: 4px 0 0;
+    }
+  }
+</style>

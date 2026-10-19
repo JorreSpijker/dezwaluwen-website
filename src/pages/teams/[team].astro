@@ -1,0 +1,651 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import StickyCta from '../../components/StickyCta.astro';
+import { getTeamMatches, getTeamStandings, teams, type ClubTeam } from '../../lib/matches';
+import { trainingFor } from '../../data/trainingstijden';
+
+export function getStaticPaths() {
+  return teams.map((team) => ({ params: { team: team.slug }, props: { team } }));
+}
+
+interface Props {
+  team: ClubTeam;
+}
+
+const { team } = Astro.props;
+const [{ program, results }, standings] = await Promise.all([getTeamMatches(team.teamCode), getTeamStandings(team)]);
+const [next, ...upcoming] = program;
+const training = trainingFor(team.short);
+
+// Teamfoto: src/assets/teams/<slug>.(webp|jpg|png), bv. s1.webp
+const photos = import.meta.glob<{ default: ImageMetadata }>('../../assets/teams/*.{webp,jpg,jpeg,png}', { eager: true });
+const photo = Object.entries(photos).find(([path]) => path.split('/').at(-1)!.split('.')[0] === team.slug)?.[1].default;
+---
+
+<Base title={`${team.name} — KV de Zwaluwen`} description={`Programma, uitslagen en trainingstijden van ${team.name}.`}>
+  <Header />
+  <main class="page container">
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Teams</span>
+      </nav>
+      <p class="category">{team.category}</p>
+      <h1 class="title">{team.name}</h1>
+    </header>
+
+    <div class="layout">
+      <div class="main-col">
+        <div class="team-photo">
+          {
+            photo ? (
+              <Image src={photo} alt={`Teamfoto ${team.name}`} widths={[640, 1280]} sizes="(max-width: 959px) 100vw, 800px" loading="eager" />
+            ) : (
+              <p class="photo-placeholder">Teamfoto volgt</p>
+            )
+          }
+        </div>
+
+        <div class="lists">
+          <section class="card" aria-labelledby="program-title">
+            <h2 class="card-title" id="program-title">Programma</h2>
+            {upcoming.length === 0 && <p class="empty">{next ? 'Geen andere wedstrijden' : 'Geen wedstrijden'} in de komende 4 weken.</p>}
+            {
+              upcoming.map((m) => (
+                <div class="row">
+                  <div class="when">
+                    <span class="date">{m.date}</span>
+                    <span class="time">{m.time}</span>
+                  </div>
+                  <div class="teams">
+                    <span class:list={{ own: m.homeOwn }}>{m.home}</span>
+                    <span class:list={{ own: m.awayOwn }}>{m.away}</span>
+                  </div>
+                  <div class="where">
+                    <span class:list={['tag', { home: m.isHome }]}>{m.isHome ? 'Thuis' : 'Uit'}</span>
+                    {m.location && <span class="location">{m.location}</span>}
+                  </div>
+                </div>
+              ))
+            }
+          </section>
+
+          <section class="card" aria-labelledby="results-title">
+            <h2 class="card-title" id="results-title">Uitslagen</h2>
+            {results.length === 0 && <p class="empty">Geen uitslagen in de afgelopen 4 weken.</p>}
+            {
+              results.map((m) => (
+                <div class="row">
+                  <div class="when">
+                    <span class="date">{m.date}</span>
+                  </div>
+                  <div class="teams">
+                    <span class:list={{ own: m.homeOwn }}>{m.home}</span>
+                    <span class:list={{ own: m.awayOwn }}>{m.away}</span>
+                  </div>
+                  <div class:list={['score', m.result]}>{m.score}</div>
+                </div>
+              ))
+            }
+          </section>
+
+          {
+            standings.map((standing) => (
+              <section class="card" aria-label={`Stand poule ${standing.pool}`}>
+                <div class="card-head">
+                  <h2 class="card-title">Stand</h2>
+                  <span class="pool">Poule {standing.pool}</span>
+                </div>
+                <div class="table-scroll">
+                  <table class="standing">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="num">#</th>
+                        <th scope="col" class="team-col">Team</th>
+                        <th scope="col" class="num"><abbr title="Gespeeld">GS</abbr></th>
+                        <th scope="col" class="num"><abbr title="Gewonnen">W</abbr></th>
+                        <th scope="col" class="num"><abbr title="Gelijk">G</abbr></th>
+                        <th scope="col" class="num"><abbr title="Verloren">V</abbr></th>
+                        <th scope="col" class="num"><abbr title="Doelsaldo">DS</abbr></th>
+                        <th scope="col" class="num"><abbr title="Punten">PT</abbr></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {standing.rows.map((row) => (
+                        <tr class:list={{ own: row.own }}>
+                          <td class="num">{row.position}</td>
+                          <th scope="row" class="team-col">{row.team}</th>
+                          <td class="num">{row.played}</td>
+                          <td class="num">{row.won}</td>
+                          <td class="num">{row.draw}</td>
+                          <td class="num">{row.lost}</td>
+                          <td class="num">{row.difference > 0 ? `+${row.difference}` : row.difference}</td>
+                          <td class="num points">{row.points}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            ))
+          }
+        </div>
+      </div>
+
+      <aside class="side" aria-label="Volgende wedstrijd en trainingstijden">
+        {
+          next && (
+            <section class="next" aria-labelledby="next-title">
+              <div class="next-head">
+                <h2 class="next-label" id="next-title">Volgende wedstrijd</h2>
+                <span class:list={['tag', { home: next.isHome }]}>{next.isHome ? 'Thuis' : 'Uit'}</span>
+              </div>
+              <div class="next-teams">
+                <span class:list={{ own: next.homeOwn }}>{next.home}</span>
+                <span class="vs" aria-hidden="true">–</span>
+                <span class:list={{ own: next.awayOwn }}>{next.away}</span>
+              </div>
+              <p class="next-meta">
+                <span>
+                  {next.date} · {next.time}
+                </span>
+                {next.location && <span>{next.location}</span>}
+              </p>
+            </section>
+          )
+        }
+
+        <section class="card training" aria-labelledby="training-title">
+          <h2 class="card-title" id="training-title">Trainingstijden</h2>
+          <dl>
+            <dt>Veld</dt>
+            <dd>{training.veld.length ? training.veld.map((slot) => <span>{slot}</span>) : '—'}</dd>
+            <dt>Zaal</dt>
+            <dd>{training.zaal.length ? training.zaal.map((slot) => <span>{slot}</span>) : '—'}</dd>
+          </dl>
+          <a href="/trainingstijden/" class="more">Alle trainingstijden →</a>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .category {
+    margin: 8px 0 0;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .team-photo {
+    aspect-ratio: 16 / 9;
+    border-radius: 20px;
+    overflow: hidden;
+    background: repeating-linear-gradient(135deg, #dbe3ee 0 12px, var(--placeholder) 12px 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .team-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-placeholder {
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: #fff;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  /* Volgende wedstrijd */
+  .next {
+    background: var(--blue);
+    color: #fff;
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: var(--card-shadow);
+  }
+
+  .next-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .next-label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue-muted);
+  }
+
+  .next-teams {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 16px;
+    font-family: var(--font-head);
+    font-size: 26px;
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--blue-muted);
+  }
+
+  .next-teams .own {
+    color: #fff;
+  }
+
+  .vs {
+    color: var(--orange);
+  }
+
+  .next-meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .tag {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--surface);
+    color: var(--muted);
+  }
+
+  .tag.home {
+    background: var(--orange);
+    color: #fff;
+  }
+
+  /* Lijsten en training */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .main-col,
+  .lists {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Sidebar blijft in beeld onder de header */
+  .side {
+    position: sticky;
+    top: 133px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  .card-title {
+    margin: 0;
+    padding: 20px 24px 12px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 24px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-right: 24px;
+  }
+
+  .pool {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .standing {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+
+  .standing th,
+  .standing td {
+    padding: 11px 8px;
+    border-top: 1px solid var(--line-soft);
+    text-align: left;
+  }
+
+  .standing thead th {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    background: var(--surface);
+  }
+
+  .standing abbr {
+    text-decoration: none;
+  }
+
+  .standing .num {
+    width: 44px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .standing tr > :first-child {
+    padding-left: 24px;
+  }
+
+  .standing tr > :last-child {
+    padding-right: 24px;
+  }
+
+  .standing tbody .team-col {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .standing .points {
+    font-weight: 700;
+  }
+
+  .standing tr.own {
+    background: var(--blue-soft);
+  }
+
+  .standing tr.own .team-col,
+  .standing tr.own .points {
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .empty {
+    margin: 0;
+    padding: 4px 24px 22px;
+    color: var(--muted);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 24px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .when {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .date {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .time {
+    font-weight: 700;
+    color: var(--blue);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .teams {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .teams span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .own {
+    font-weight: 700;
+  }
+
+  .where {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    text-align: right;
+  }
+
+  .location {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .score {
+    min-width: 64px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+
+  .score.win {
+    color: var(--green);
+    background: var(--green-soft);
+  }
+
+  .score.draw {
+    color: var(--yellow);
+    background: var(--yellow-soft);
+  }
+
+  .score.loss {
+    color: var(--red);
+    background: var(--red-soft);
+  }
+
+  .training {
+    padding-bottom: 20px;
+  }
+
+  .training dl {
+    margin: 0;
+    padding: 4px 24px 16px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 16px;
+  }
+
+  .training dt {
+    font-weight: 700;
+  }
+
+  .training dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-2);
+  }
+
+  .training dd span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .more {
+    margin: 0 24px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 28px;
+    }
+
+    .team-photo {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+
+    .next {
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    /* Mobiel: foto, volgende wedstrijd, trainingstijden, dan de lijsten */
+    .main-col,
+    .side {
+      display: contents;
+    }
+
+    .team-photo {
+      order: 0;
+    }
+
+    .next {
+      order: 1;
+    }
+
+    .training {
+      order: 2;
+    }
+
+    .lists {
+      order: 3;
+    }
+
+    .row {
+      grid-template-columns: 72px minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 12px 18px;
+      font-size: 15px;
+    }
+
+    .card-title {
+      padding: 18px 18px 10px;
+      font-size: 22px;
+    }
+
+    .empty,
+    .training dl {
+      padding-inline: 18px;
+    }
+
+    .card-head {
+      padding-right: 18px;
+    }
+
+    .standing {
+      font-size: 14px;
+    }
+
+    .standing .num {
+      width: 34px;
+    }
+
+    .standing th,
+    .standing td {
+      padding: 10px 5px;
+    }
+
+    .standing tr > :first-child {
+      padding-left: 18px;
+    }
+
+    .standing tr > :last-child {
+      padding-right: 18px;
+    }
+
+    .more {
+      margin: 0 18px;
+    }
+
+    .location {
+      display: none;
+    }
+  }
+</style>

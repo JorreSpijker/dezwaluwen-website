@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import News from '../components/News.astro';
+import Matches from '../components/Matches.astro';
+import QuickLinks from '../components/QuickLinks.astro';
+import Shop from '../components/Shop.astro';
+import Footer from '../components/Footer.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { getNews } from '../lib/news';
+
+const allNews = await getNews();
+// Uitgelicht bericht neemt een volle rij; daaronder altijd 4 gewone berichten
+const news = allNews.slice(0, allNews[0]?.data.sticky ? 5 : 4);
+---
+
+<Base
+  title="KV de Zwaluwen — korfbal voor iedereen"
+  description="Korfbalvereniging de Zwaluwen. Train met vrienden, speel elke zaterdag een wedstrijd. Train gratis mee."
+>
+  <Header />
+  <main>
+    <Hero />
+    <div class="main container">
+      <div class="quick">
+        <QuickLinks />
+      </div>
+      <News items={news} highlightSticky />
+      <aside class="side" aria-label="Wedstrijden">
+        <Matches />
+      </aside>
+    </div>
+    <Shop />
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  .main {
+    padding-top: 0;
+    padding-bottom: 96px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    grid-template-areas:
+      'quick quick'
+      'news side';
+    gap: 96px 48px;
+  }
+
+  /* Lichtblauwe band tot de schermranden; clip-path voorkomt horizontale scroll */
+  .quick {
+    grid-area: quick;
+    padding-block: 40px;
+    background: var(--blue-soft);
+    box-shadow: 0 0 0 100vmax var(--blue-soft);
+    clip-path: inset(0 -100vmax);
+  }
+
+  .main > :global(.news) {
+    grid-area: news;
+  }
+
+  /* Wedstrijdkaart blijft in beeld onder de header (109px) tijdens scrollen */
+  .side {
+    grid-area: side;
+    align-self: start;
+    position: sticky;
+    top: 133px;
+    --matches-max-height: calc(100svh - 157px);
+  }
+
+  @media (max-width: 959px) {
+    /* Ruimte voor de vaste proefles-knop */
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .quick {
+      padding-block: 20px;
+    }
+
+    .main {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'side'
+        'quick'
+        'news';
+      padding: 0 20px 28px;
+      gap: 28px;
+    }
+
+    /* Wedstrijdkaart schuift over de onderkant van de hero-foto */
+    .side {
+      --matches-max-height: none;
+      margin-top: -170px;
+      position: relative;
+      top: auto;
+      z-index: 5;
+    }
+
+    .side :global([data-matches]) {
+      margin-inline: 12px;
+    }
+  }
+</style>

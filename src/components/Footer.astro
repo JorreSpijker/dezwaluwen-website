@@ -1,0 +1,64 @@
+---
+const links = ['Over de club', 'Vrijwilligers', 'Route', 'Contact'];
+---
+
+<footer class="footer">
+  <div class="inner container">
+    <img src="/logo.svg" alt="KV de Zwaluwen" width="46" height="48" />
+    <nav class="links" aria-label="Footer">
+      {links.map((link) => <a href="#">{link}</a>)}
+    </nav>
+    <span class="copy">© KV de Zwaluwen</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid #eceef2;
+  }
+
+  .inner {
+    padding-top: 36px;
+    padding-bottom: 36px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    font-size: 15px;
+    color: var(--text-2);
+  }
+
+  img {
+    height: 48px;
+    width: auto;
+  }
+
+  .links {
+    display: flex;
+    gap: 40px;
+  }
+
+  .links a {
+    color: var(--text-2);
+  }
+
+  .copy {
+    margin-left: auto;
+  }
+
+  @media (max-width: 959px) {
+    .inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .links {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .copy {
+      margin-left: 0;
+    }
+  }
+</style>

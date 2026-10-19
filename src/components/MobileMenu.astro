@@ -1,0 +1,199 @@
+---
+import { linkHref, menu } from '../data/menu';
+---
+
+<dialog class="sheet" aria-label="Menu" data-mobile-menu>
+  <div class="sheet-body">
+    <button class="handle" type="button" aria-label="Menu sluiten" data-mobile-close></button>
+
+    <div class="tiles" data-mobile-root>
+      {
+        menu.map((item, i) => (
+          <button class="tile" type="button" data-mobile-sub={i}>
+            {item.label}
+            <span class="chevron" aria-hidden="true">›</span>
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      menu.map((item, i) => (
+        <div class="sub" hidden data-mobile-panel={i}>
+          <div class="sub-head">
+            <button class="back" type="button" aria-label="Terug" data-mobile-back>‹</button>
+            <div class="sub-title">{item.label}</div>
+          </div>
+          {item.groups.map((group) => (
+            <div class="group">
+              <div class="group-title">{group.title}</div>
+              {group.links.map((link) => (
+                <a href={linkHref(link)} class="link">
+                  {link}
+                  <span class="chevron" aria-hidden="true">›</span>
+                </a>
+              ))}
+            </div>
+          ))}
+        </div>
+      ))
+    }
+
+    <a href="#" class="contact">Contact</a>
+  </div>
+</dialog>
+
+<style>
+  .sheet {
+    width: 100%;
+    max-width: 100%;
+    max-height: 90dvh;
+    margin: auto 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 24px 24px 0 0;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .sheet::backdrop {
+    background: rgba(17, 24, 39, 0.45);
+  }
+
+  .sheet-body {
+    padding: 14px 20px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .handle {
+    width: 40px;
+    height: 5px;
+    border-radius: 3px;
+    background: #d1d5db;
+    align-self: center;
+    margin-bottom: 12px;
+  }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .tiles[hidden] {
+    display: none;
+  }
+
+  .tile {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 19px;
+    text-align: left;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chevron {
+    font-size: 16px;
+    color: var(--faint);
+  }
+
+  .sub {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 520px;
+    overflow-y: auto;
+  }
+
+  .sub[hidden] {
+    display: none;
+  }
+
+  .sub-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .back {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 20px;
+  }
+
+  .sub-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--blue);
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .group-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 4px;
+  }
+
+  .link {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--line-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .contact {
+    padding: 16px 4px 0;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-mobile-menu]')!;
+  const root = dialog.querySelector<HTMLElement>('[data-mobile-root]')!;
+  const panels = dialog.querySelectorAll<HTMLElement>('[data-mobile-panel]');
+
+  function showSub(index: number | null) {
+    root.hidden = index !== null;
+    panels.forEach((p, i) => (p.hidden = i !== index));
+  }
+
+  document.querySelector('[data-mobile-open]')!.addEventListener('click', () => {
+    showSub(null);
+    dialog.showModal();
+  });
+  dialog.querySelector('[data-mobile-close]')!.addEventListener('click', () => dialog.close());
+  // Klik op de achtergrond sluit het menu
+  dialog.addEventListener('click', (e) => e.target === dialog && dialog.close());
+
+  dialog.querySelectorAll<HTMLButtonElement>('[data-mobile-sub]').forEach((tile) =>
+    tile.addEventListener('click', () => {
+      showSub(Number(tile.dataset.mobileSub));
+      dialog.querySelector<HTMLButtonElement>('.sub:not([hidden]) [data-mobile-back]')!.focus();
+    }),
+  );
+  dialog.querySelectorAll<HTMLButtonElement>('[data-mobile-back]').forEach((back) =>
+    back.addEventListener('click', () => showSub(null)),
+  );
+</script>

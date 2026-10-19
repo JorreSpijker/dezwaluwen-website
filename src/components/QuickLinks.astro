@@ -1,0 +1,81 @@
+---
+const links = [
+  { title: 'Aanmelden Zwaluwenpost', text: 'Clubnieuws in je mailbox' },
+  { title: 'Aanmelden WhatsApp community', text: 'Snel op de hoogte' },
+  { title: 'Lid worden', text: 'Aanmelden en contributie' },
+  { title: 'Clubshop', text: 'Tenues en fanartikelen' },
+];
+---
+
+<div class="links">
+  {
+    links.map((link) => (
+      <a href="#" class="link">
+        <span class="top">
+          <span class="title">{link.title}</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </span>
+        <span class="text">{link.text}</span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .links {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .link {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--ink);
+  }
+
+  .link:hover {
+    text-decoration: none;
+    background: var(--blue-muted);
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--blue);
+  }
+
+  .arrow {
+    color: var(--orange);
+    font-weight: 700;
+  }
+
+  .text {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  @media (max-width: 959px) {
+    .links {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .title {
+      font-size: 16px;
+    }
+  }
+</style>

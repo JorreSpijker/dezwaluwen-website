@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import shopPhoto from '../assets/shop-tenue.webp';
+---
+
+<section class="shop container" aria-labelledby="shop-title">
+  <div class="inner">
+    <div class="text">
+      <h2 class="title" id="shop-title">Clubshop</h2>
+      <p class="body">Wedstrijdshirt, trainingspak en de Zwaluwen-hoodie. Besteld voor vrijdag, zaterdag op te halen in de kantine.</p>
+      <a href="#" class="pill button">Naar de shop</a>
+    </div>
+    <div class="photo">
+      <Image src={shopPhoto} alt="Spelers in tenue en trainingspak" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .shop {
+    margin-bottom: 64px;
+  }
+
+  .inner {
+    border-radius: 20px;
+    background: var(--shop-bg);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+
+  .text {
+    padding: 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 36px;
+  }
+
+  .body {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .button {
+    align-self: flex-start;
+    background: var(--ink);
+  }
+
+  .photo {
+    min-height: 260px;
+    position: relative;
+    background: var(--shop-photo-bg);
+  }
+
+  .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Witte waas vanaf de tekstkant */
+  .photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.15) 45%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  @media (max-width: 959px) {
+    .shop {
+      margin-bottom: 28px;
+    }
+
+    .inner {
+      grid-template-columns: 1fr;
+    }
+
+    .text {
+      padding: 28px 24px;
+    }
+
+    .title {
+      font-size: 28px;
+    }
+
+    .photo {
+      min-height: 200px;
+    }
+  }
+</style>

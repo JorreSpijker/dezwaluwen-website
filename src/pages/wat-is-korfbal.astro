@@ -1,0 +1,439 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { linkHref, menu } from '../data/menu';
+import photo from '../assets/hero-desktop-1.webp';
+
+const promo = menu[0];
+
+const facts = [
+  { title: 'Gemengd', text: 'Elk team heeft vier vrouwen en vier mannen. Jongens en meisjes spelen samen.' },
+  { title: 'Twee vakken', text: 'Het veld is verdeeld in een aanvals- en een verdedigingsvak, met in elk vak twee vrouwen en twee mannen.' },
+  { title: 'Korf op 3,5 meter', text: 'De korf staat op een paal en heeft geen bord. Je kunt er van alle kanten op scoren.' },
+  { title: 'Samenspelen', text: 'Lopen met de bal of stuiteren mag niet. Je komt alleen vooruit door over te spelen.' },
+];
+---
+
+<Base
+  title="Wat is korfbal? — KV de Zwaluwen"
+  description="Korfbal is de gemengde teamsport waarin vrouwen en mannen samen spelen. Lees hoe het spel werkt en probeer het gratis bij KV de Zwaluwen."
+>
+  <Header />
+  <main class="page container">
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Nieuw lid?</span>
+      </nav>
+      <h1 class="title">Wat is korfbal?</h1>
+      <p class="lead">
+        Korfbal is een snelle teamsport waarin vrouwen en mannen samen in één team spelen. Je scoort door de bal in een korf op een paal te gooien, en je wint alleen als je goed samenwerkt.
+      </p>
+    </header>
+
+    <div class="photo">
+      <Image src={photo} alt="Jeugdspelers bij de korf tijdens een training" widths={[640, 1280]} sizes="(max-width: 959px) 100vw, 1168px" loading="eager" />
+    </div>
+
+    <section class="facts" aria-label="Korfbal in het kort">
+      {
+        facts.map((fact) => (
+          <div class="fact">
+            <h2 class="fact-title">{fact.title}</h2>
+            <p>{fact.text}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <div class="layout">
+      <article class="prose">
+        <h2>Hoe speel je korfbal?</h2>
+        <p>
+          Een team bestaat uit acht spelers. Vier staan in het aanvalsvak en proberen te scoren, vier staan in het verdedigingsvak en proberen dat bij de tegenstander te voorkomen. In elk vak staan twee vrouwen en twee mannen.
+        </p>
+
+        <figure class="field">
+          <svg viewBox="0 0 600 300" role="img" aria-labelledby="field-title">
+            <title id="field-title">Korfbalveld met twee vakken, in elk vak twee vrouwen en twee mannen per team</title>
+            <rect x="2" y="2" width="596" height="296" rx="14" class="field-bg" />
+            <line x1="300" y1="2" x2="300" y2="298" class="field-line" />
+            <circle cx="100" cy="150" r="9" class="korf" />
+            <circle cx="500" cy="150" r="9" class="korf" />
+            <text x="150" y="36" class="field-label">Vak A</text>
+            <text x="450" y="36" class="field-label">Vak B</text>
+            <!-- Team blauw: aanval in vak B, verdediging in vak A -->
+            <g class="team-blue">
+              <circle cx="190" cy="90" r="11" /><circle cx="230" cy="200" r="11" />
+              <rect x="150" y="215" width="20" height="20" rx="4" /><rect x="220" y="105" width="20" height="20" rx="4" />
+              <circle cx="410" cy="100" r="11" /><circle cx="450" cy="220" r="11" />
+              <rect x="390" y="190" width="20" height="20" rx="4" /><rect x="530" y="80" width="20" height="20" rx="4" />
+            </g>
+            <!-- Team oranje: aanval in vak A, verdediging in vak B -->
+            <g class="team-orange">
+              <circle cx="160" cy="70" r="11" /><circle cx="60" cy="230" r="11" />
+              <rect x="120" y="190" width="20" height="20" rx="4" /><rect x="250" y="140" width="20" height="20" rx="4" />
+              <circle cx="430" cy="70" r="11" /><circle cx="480" cy="250" r="11" />
+              <rect x="360" y="215" width="20" height="20" rx="4" /><rect x="545" y="120" width="20" height="20" rx="4" />
+            </g>
+          </svg>
+          <figcaption>
+            <span><i class="key key-round"></i> vrouw</span>
+            <span><i class="key key-square"></i> man</span>
+            <span><i class="key key-korf"></i> korf</span>
+            <span><i class="key key-blue"></i> team 1</span>
+            <span><i class="key key-orange"></i> team 2</span>
+            Na elke twee doelpunten wisselen de vakken: aanvallers worden verdedigers en andersom.
+          </figcaption>
+        </figure>
+
+        <p>
+          Na elke twee doelpunten (van welk team ook) wisselen de vakken. De aanvallers gaan verdedigen en de verdedigers gaan aanvallen. Zo speelt iedereen zowel in de aanval als in de verdediging, en heb je het hele team nodig.
+        </p>
+
+        <h2>Scoren</h2>
+        <p>
+          De korf staat op een paal van 3,5 meter hoog, een eind van de achterlijn. Er zit geen bord achter, dus je kunt van alle kanten scoren en er wordt ook achter de korf gespeeld. Bekende manieren om te scoren zijn:
+        </p>
+        <ul>
+          <li><strong>Afstandsschot</strong>: een schot van een paar meter afstand, vaak na snel overspelen.</li>
+          <li><strong>Doorloopbal</strong>: je krijgt de bal terwijl je naar de korf loopt en schiet hem er van dichtbij in.</li>
+          <li><strong>Strafworp</strong>: een vrije worp van dichtbij voor de korf, na een overtreding.</li>
+        </ul>
+
+        <h2>Verdedigen</h2>
+        <p>
+          Je verdedigt altijd iemand van hetzelfde geslacht: vrouwen verdedigen vrouwen, mannen verdedigen mannen. Duwen, vasthouden en blokkeren mag niet; korfbal is een sport zonder lichamelijk contact.
+        </p>
+        <p>
+          Als aanvaller mag je niet schieten als je <em>verdedigd</em> bent: je verdediger staat dan dichtbij, tussen jou en de paal, en probeert het schot te blokkeren. De kunst is dus om je tegenstander af te schudden en vrij te komen.
+        </p>
+
+        <h2>Veld en zaal</h2>
+        <p>
+          In Nederland speel je korfbal het hele jaar. In de nazomer en het voorjaar spelen we buiten op het veld, in de winter binnen in de zaal. Bij KV de Zwaluwen trainen we op het veld op Sportpark Hengelder; zie de <a href="/trainingstijden/">trainingstijden</a> per team.
+        </p>
+
+        <h2>Waar komt korfbal vandaan?</h2>
+        <p>
+          Korfbal is in 1902 bedacht door Nico Broekhuysen, een onderwijzer uit Amsterdam. Hij wilde een balspel waarin jongens en meisjes samen konden spelen. Inmiddels wordt korfbal in tientallen landen gespeeld, maar Nederland is nog altijd het grootste korfballand.
+        </p>
+      </article>
+
+      <aside class="promo" aria-label="Gratis proefles">
+        <div class="promo-title">{promo.promoTitle}</div>
+        <p class="promo-text">{promo.promoText}</p>
+        <a href={linkHref(promo.promoCta)} class="pill promo-cta">{promo.promoCta}</a>
+      </aside>
+    </div>
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 820px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .photo {
+    aspect-ratio: 21 / 9;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--placeholder);
+  }
+
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .fact {
+    background: var(--blue-soft);
+    border-radius: 16px;
+    padding: 22px;
+  }
+
+  .fact-title {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--blue);
+  }
+
+  .fact p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 720px) 340px;
+    justify-content: space-between;
+    gap: 48px;
+    padding-top: 16px;
+  }
+
+  .prose {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .prose h2 {
+    margin: 44px 0 12px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  .prose h2:first-child {
+    margin-top: 0;
+  }
+
+  .prose p,
+  .prose ul {
+    margin: 0 0 18px;
+  }
+
+  .prose li {
+    margin-bottom: 8px;
+  }
+
+  .prose strong {
+    color: var(--ink);
+  }
+
+  /* Veldtekening */
+  .field {
+    margin: 28px 0;
+  }
+
+  .field svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .field-bg {
+    fill: #e6f2e9;
+    stroke: #b9d9c2;
+    stroke-width: 2;
+  }
+
+  .field-line {
+    stroke: #fff;
+    stroke-width: 4;
+  }
+
+  .korf {
+    fill: #ffd400;
+    stroke: var(--ink);
+    stroke-width: 3;
+  }
+
+  .field-label {
+    font: 700 16px var(--font-body);
+    fill: #3f7a52;
+    text-anchor: middle;
+  }
+
+  .team-blue {
+    fill: var(--blue);
+  }
+
+  .team-orange {
+    fill: var(--orange);
+  }
+
+  .field figcaption {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .field figcaption span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .key {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: var(--ink);
+  }
+
+  .key-round {
+    border-radius: 50%;
+  }
+
+  .key-square {
+    border-radius: 3px;
+  }
+
+  .key-blue {
+    border-radius: 3px;
+    background: var(--blue);
+  }
+
+  .key-orange {
+    border-radius: 3px;
+    background: var(--orange);
+  }
+
+  .key-korf {
+    border-radius: 50%;
+    background: #ffd400;
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+
+  .promo {
+    align-self: start;
+    position: sticky;
+    top: 133px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .promo-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--blue);
+  }
+
+  .promo-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .promo-cta {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 28px;
+    }
+
+    .lead {
+      font-size: 18px;
+    }
+
+    .photo {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+
+    .facts {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .fact {
+      padding: 16px;
+    }
+
+    .fact-title {
+      font-size: 17px;
+    }
+
+    .fact p {
+      font-size: 14px;
+    }
+
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-top: 0;
+    }
+
+    .prose {
+      font-size: 17px;
+    }
+
+    .prose h2 {
+      margin-top: 36px;
+      font-size: 24px;
+    }
+
+    .promo {
+      position: static;
+    }
+  }
+</style>

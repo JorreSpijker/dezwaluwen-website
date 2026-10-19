@@ -1,0 +1,838 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { ages, defaultAge, initials } from '../data/memberwizard';
+import { trainingDaysFor, trainingFor } from '../data/trainingstijden';
+
+const address = 'Sportpark Hengelder, Marconistraat 18, 6902 PC Zevenaar';
+const routeUrl = 'https://www.google.com/maps/search/?api=1&query=Marconistraat+18+6902PC+Zevenaar';
+
+const faq = [
+  {
+    q: 'Wat neem ik mee?',
+    a: 'Sportkleding en sportschoenen. Op het veld zijn schoenen met noppen handig, in de zaal gymschoenen met een lichte zool. Neem ook een bidon mee.',
+  },
+  {
+    q: 'Waar is de training?',
+    a: `Op het veld trainen we op ${address}. In het zaalseizoen trainen we bij Heerenmäten en De Cluse; je hoort vooraf waar je moet zijn.`,
+  },
+  {
+    q: 'Moet ik al kunnen korfballen?',
+    a: 'Nee. De trainer weet dat je komt proberen en zorgt dat je snel meedoet. Iedereen begint een keer.',
+  },
+  {
+    q: 'Wat gebeurt er na drie trainingen?',
+    a: 'Vond je het leuk, dan kun je lid worden. Twijfel je nog, laat het de trainer weten. Je zit nergens aan vast.',
+  },
+];
+---
+
+<Base title="Gratis proefles — KV de Zwaluwen" description="Train gratis mee bij KV de Zwaluwen. Kies je leeftijd en plan je proefles.">
+  <Header />
+  <main class="page container" data-proefles>
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Nieuw lid?</span>
+      </nav>
+      <h1 class="title">Train gratis mee</h1>
+      <p class="lead">Kies je leeftijd, kom naar een training en ontdek of korfbal bij je past.</p>
+
+      <div class="picker">
+        <div class="eyebrow" id="age-label">Hoe oud ben je?</div>
+        <div class="ages" role="group" aria-labelledby="age-label">
+          {
+            ages.map((age, i) => (
+              <button class="age" type="button" aria-pressed={String(i === defaultAge)} data-age={i} data-key={age.key}>
+                {age.label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="info">
+        {
+          ages.map((age, i) => (
+            <div class="age-panel" data-age-panel={i} hidden={i !== defaultAge}>
+              <section class="block korfbal">
+                <div class="photo">
+                  <Image src={age.desktop} alt={age.alt} />
+                </div>
+                <div class="block-body">
+                  <span class="step">1</span>
+                  <h2 class="block-title">Korfbal</h2>
+                  <p>{age.korfbal}</p>
+                </div>
+              </section>
+
+              <section class="block club">
+                <span class="step">2</span>
+                <h2 class="block-title">De club</h2>
+                <p>{age.club}</p>
+                {age.showTimes ? (
+                  <div class="times">
+                    <span class="times-label">Trainingstijden</span>
+                    <div class="team-list">
+                      {age.teams.map((team) => {
+                        const { veld, zaal } = trainingFor(team);
+                        return (
+                          <div class="team-times">
+                            <span class="team-name">{team}</span>
+                            <dl>
+                              <dt>Veld</dt>
+                              <dd>{veld.length ? veld.map((slot) => <span>{slot}</span>) : '—'}</dd>
+                              <dt>Zaal</dt>
+                              <dd>{zaal.length ? zaal.map((slot) => <span>{slot}</span>) : '—'}</dd>
+                            </dl>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div class="times">
+                    <span class="times-label">Trainingsdagen</span>
+                    <dl class="days">
+                      <dt>Veld</dt>
+                      <dd>{trainingDaysFor(age.teams).veld}</dd>
+                      <dt>Zaal</dt>
+                      <dd>{trainingDaysFor(age.teams).zaal}</dd>
+                    </dl>
+                    <p class="team-note">Samen met jou bepalen we bij welk team je kind meetraint.</p>
+                  </div>
+                )}
+                <a href="/trainingstijden/" class="more">Alle trainingstijden →</a>
+              </section>
+            </div>
+          ))
+        }
+
+        <section class="faq" aria-labelledby="faq-title">
+          <h2 class="faq-title" id="faq-title">Goed om te weten</h2>
+          {
+            faq.map((item) => (
+              <details>
+                <summary>{item.q}</summary>
+                <p>{item.a}</p>
+              </details>
+            ))
+          }
+        </section>
+      </div>
+
+      <aside class="signup" id="aanmelden" aria-labelledby="signup-title">
+        <form class="card" data-form>
+          <span class="step">3</span>
+          <h2 class="card-title" id="signup-title">Plan je proefles</h2>
+          <p class="card-group" data-group>{ages[defaultAge].group}</p>
+
+          {
+            ages.map(({ contact }, i) => (
+              <div class="contact" data-age-panel={i} hidden={i !== defaultAge}>
+                {contact.photo ? (
+                  <Image src={contact.photo} alt="" width={112} height={112} class="avatar" />
+                ) : (
+                  <span class="avatar avatar-initials" aria-hidden="true">
+                    {initials(contact.name)}
+                  </span>
+                )}
+                <div>
+                  <div class="contact-label">Je wordt ontvangen door</div>
+                  <div class="contact-name">{contact.name}</div>
+                  <div class="contact-role">{contact.role}</div>
+                </div>
+              </div>
+            ))
+          }
+          <input type="hidden" name="groep" value={ages[defaultAge].group} data-group-input />
+
+          {
+            ages.map((age, i) => (
+              <fieldset class="dates" data-age-panel={i} disabled={i !== defaultAge} hidden={i !== defaultAge}>
+                <legend class="label">Kies een datum</legend>
+                {age.dates.map((date) => (
+                  <label class="date">
+                    <input type="radio" name="datum" value={date} required />
+                    <span>{date}</span>
+                  </label>
+                ))}
+              </fieldset>
+            ))
+          }
+
+          <label class="field">
+            <span class="label">Naam deelnemer</span>
+            <input type="text" name="naam" autocomplete="name" required />
+          </label>
+
+          <label class="field">
+            <span class="label">Geboortedatum</span>
+            <input type="date" name="geboortedatum" required />
+          </label>
+
+          <fieldset class="youth" data-youth disabled={!ages[defaultAge].youth} hidden={!ages[defaultAge].youth}>
+            <label class="field">
+              <span class="label">Naam ouder/verzorger</span>
+              <input type="text" name="ouder" required />
+            </label>
+          </fieldset>
+
+          <label class="field">
+            <span class="label">E-mailadres</span>
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+
+          <label class="field">
+            <span class="label">Telefoonnummer</span>
+            <input type="tel" name="telefoon" autocomplete="tel" required />
+          </label>
+
+          <label class="field">
+            <span class="label">Opmerking <span class="optional">(optioneel)</span></span>
+            <textarea name="opmerking" rows="3"></textarea>
+          </label>
+
+          <button class="pill submit" type="submit">Plan mijn proefles</button>
+          <p class="privacy">We gebruiken je gegevens alleen om de proefles in te plannen.</p>
+        </form>
+
+        <div class="card done" hidden data-done tabindex="-1">
+          <span class="check" aria-hidden="true">✓</span>
+          <h2 class="card-title">Tot <span data-done-date></span>!</h2>
+          <p>We hebben je aanmelding ontvangen. <span data-contact-name>{ages[defaultAge].contact.name}</span> neemt contact met je op om de proefles te bevestigen en vangt je op bij de training.</p>
+          <dl class="done-list">
+            <dt>Waar</dt>
+            <dd>
+              {address}<br /><a href={routeUrl} target="_blank" rel="noopener">Route plannen →</a>
+            </dd>
+            <dt>Meenemen</dt>
+            <dd>Sportkleding, sportschoenen en een bidon.</dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <Footer />
+  <StickyCta href="#aanmelden" />
+</Base>
+
+<script define:vars={{ ages: ages.map(({ key, group, youth, contact }) => ({ key, group, youth, contact: contact.name })), defaultAge }}>
+  const page = document.querySelector('[data-proefles]');
+  const buttons = page.querySelectorAll('[data-age]');
+  const panels = page.querySelectorAll('[data-age-panel]');
+  const youth = page.querySelector('[data-youth]');
+  const form = page.querySelector('[data-form]');
+  const done = page.querySelector('[data-done]');
+
+  function selectAge(index, updateUrl) {
+    const age = ages[index];
+    buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === index)));
+    panels.forEach((p) => {
+      const active = Number(p.dataset.agePanel) === index;
+      p.hidden = !active;
+      // Alleen de datums van de gekozen leeftijd tellen mee in het formulier
+      if (p.tagName === 'FIELDSET') p.disabled = !active;
+    });
+    youth.hidden = youth.disabled = !age.youth;
+    page.querySelector('[data-group]').textContent = age.group;
+    page.querySelector('[data-group-input]').value = age.group;
+    page.querySelector('[data-contact-name]').textContent = age.contact;
+    if (updateUrl) history.replaceState(null, '', `?leeftijd=${age.key}`);
+  }
+
+  buttons.forEach((button, i) => button.addEventListener('click', () => selectAge(i, true)));
+
+  // Voorselectie vanuit de hero: /proefles/?leeftijd=7-11
+  const fromUrl = ages.findIndex((a) => a.key === new URLSearchParams(location.search).get('leeftijd'));
+  selectAge(fromUrl === -1 ? defaultAge : fromUrl, false);
+
+  // Formulierverwerking is nog niet gekozen (zie docs/proefles-voorstel.md); nu alleen de bevestiging tonen
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const date = String(new FormData(form).get('datum'));
+    page.querySelector('[data-done-date]').textContent = date.charAt(0).toLowerCase() + date.slice(1);
+    form.hidden = true;
+    done.hidden = false;
+    done.focus();
+  });
+</script>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 760px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .picker {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .ages {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .age {
+    border: 2px solid var(--blue);
+    color: var(--blue);
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 999px;
+  }
+
+  .age[aria-pressed='true'] {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .info,
+  .age-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .info {
+    gap: 56px;
+  }
+
+  .block {
+    position: relative;
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .block p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .korfbal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding: 0;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  .photo {
+    min-height: 260px;
+    position: relative;
+    background: var(--placeholder);
+  }
+
+  .photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .block-body {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .block-title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.15;
+  }
+
+  .times {
+    margin-top: 4px;
+    padding: 4px 14px;
+    border-radius: 12px;
+    background: #fff;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .times-label {
+    display: block;
+    padding: 10px 0 6px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .days {
+    margin: 0;
+    padding: 4px 0 10px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 12px;
+  }
+
+  .days dt {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .days dd {
+    margin: 0;
+  }
+
+  .days dd::first-letter {
+    text-transform: uppercase;
+  }
+
+  .times .team-note {
+    margin: 0;
+    padding: 10px 0 12px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  /* Teams naast elkaar zolang er ruimte is */
+  .team-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    column-gap: 24px;
+  }
+
+  .team-times {
+    display: grid;
+    grid-template-columns: minmax(52px, auto) minmax(0, 1fr);
+    gap: 14px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .team-name {
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .team-times dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2px 10px;
+  }
+
+  .team-times dt {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .team-times dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Elk tijdvak op een eigen regel, nooit midden in een tijd afbreken */
+  .team-times dd span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .more {
+    margin-top: auto;
+    font-weight: 600;
+  }
+
+  .faq {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-title {
+    margin: 0 0 12px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 32px;
+  }
+
+  details {
+    border-bottom: 1px solid var(--line);
+  }
+
+  summary {
+    padding: 18px 0;
+    font-weight: 600;
+    font-size: 17px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  details[open] summary::after {
+    content: '–';
+  }
+
+  details p {
+    margin: 0 0 18px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  /* Aanmeldkaart blijft in beeld onder de header */
+  .signup {
+    position: sticky;
+    top: 133px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 0;
+    margin: 0;
+  }
+
+  .card-title {
+    margin: -6px 0 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--blue);
+  }
+
+  .card-group {
+    margin: -10px 0 0;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .contact {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--surface);
+  }
+
+  .avatar {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .avatar-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--blue);
+    color: #fff;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .contact-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .contact-name {
+    font-weight: 700;
+    font-size: 17px;
+  }
+
+  .contact-role {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .dates,
+  .youth {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .dates {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 6px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .optional {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .date:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+
+  .date input {
+    accent-color: var(--blue);
+    margin: 0;
+  }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  .field textarea {
+    resize: vertical;
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+
+  .submit {
+    margin-top: 4px;
+    width: 100%;
+    height: 52px;
+    font-size: 17px;
+  }
+
+  .privacy {
+    margin: -6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .done {
+    outline: none;
+  }
+
+  .done p {
+    margin: 0;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--green-soft);
+    color: var(--green);
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .done-list {
+    margin: 4px 0 0;
+    display: grid;
+    gap: 4px 0;
+  }
+
+  .done-list dt {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .done-list dd {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 32px;
+    }
+
+    .lead {
+      font-size: 17px;
+    }
+
+    .ages {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .age {
+      height: 46px;
+      padding: 0;
+    }
+
+    /* Mobiel: uitleg, dan formulier, dan vragen */
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .info {
+      display: contents;
+    }
+
+    .faq {
+      order: 2;
+    }
+
+    .signup {
+      order: 1;
+    }
+
+    .korfbal {
+      grid-template-columns: 1fr;
+    }
+
+    .photo {
+      min-height: 200px;
+    }
+
+    .block:not(.korfbal),
+    .block-body,
+    .card {
+      padding: 22px;
+    }
+
+    .signup {
+      position: static;
+      scroll-margin-top: 96px;
+    }
+
+    .faq-title {
+      font-size: 26px;
+    }
+  }
+</style>
