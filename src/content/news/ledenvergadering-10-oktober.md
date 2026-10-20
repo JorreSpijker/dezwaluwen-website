@@ -18,3 +18,5 @@ Op vrijdag 10 oktober houden we de algemene ledenvergadering in de kantine. We b
 - Rondvraag
 
 De stukken liggen een week vooraf ter inzage. Alle leden van 16 jaar en ouder hebben stemrecht. Voor jeugdleden mag een ouder stemmen.
+
+1-2-3
