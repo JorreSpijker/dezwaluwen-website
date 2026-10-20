@@ -18,3 +18,5 @@ Bij rust stond het nog 8–9 voor Blauw-Wit. Na de thee kwam Zwaluwen 1 scherper
 ## Volgende wedstrijd
 
 Zaterdag om 14:30 speelt Zwaluwen 1 thuis tegen KV Rapid '62. Kom kijken en moedig het team aan, de kantine is open vanaf 13:00.
+
+Lalals
