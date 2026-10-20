@@ -1,6 +1,7 @@
 ---
 import Beheer from '../../../layouts/Beheer.astro';
 import { listNews } from '../../../lib/admin/news';
+import { drafts } from '../../../lib/admin/repo';
 
 export const prerender = false;
 
@@ -16,7 +17,13 @@ const formatDate = (date: string) =>
     <h1>Nieuws</h1>
     <a href="/beheer/nieuws/nieuw" class="pill">+ Nieuw bericht</a>
   </div>
-  {removed && <p class="message">Bericht verwijderd. Over ongeveer een minuut is het ook van de site af.</p>}
+  {
+    removed && (
+      <p class="message">
+        {drafts ? 'Bericht verwijderd. Na Publiceren in het overzicht is het ook van de site af.' : 'Bericht verwijderd. Over ongeveer een minuut is het ook van de site af.'}
+      </p>
+    )
+  }
   <ul class="list">
     {
       items.map((item) => (

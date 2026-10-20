@@ -1,6 +1,6 @@
 # Handleiding beheer website KV de Zwaluwen
 
-Met het beheer pas je zelf nieuws, trainingstijden, bestuur & commissies en teams aan. Wat je opslaat staat na ongeveer een minuut op de site.
+Met het beheer pas je zelf nieuws, trainingstijden, bestuur & commissies en teams aan. Wat je opslaat is eerst een **concept**: het staat nog niet op de site. Met **Publiceren** in het overzicht zet je alle wijzigingen in één keer live.
 
 ## Inloggen
 
@@ -34,10 +34,18 @@ Je blijft 30 dagen ingelogd. Uitloggen kan rechtsboven.
 - Lijsten (leden, taken, teams) hebben knoppen om toe te voegen, te verwijderen en te verplaatsen.
 - **Teams & Sportlink:** de teamcode en poulecodes komen uit Sportlink. Een verkeerde code betekent dat programma en uitslagen van dat team niet meer kloppen. Twijfel je? Vraag het eerst.
 
+## Publiceren
+
+- Op het **overzicht** (dezwaluwen.nl/beheer) staat bovenaan welke wijzigingen nog niet gepubliceerd zijn, en door wie.
+- **Bekijk preview** opent de site zoals hij wordt na publiceren. Na opslaan duurt het een paar minuten voor de preview klaar is.
+- Klik **Publiceren** om alles live te zetten. Na ongeveer een minuut staat het op de site.
+- Publiceren zet de wijzigingen van **iedereen** live, niet alleen die van jou.
+
 ## Meldingen na opslaan
 
 | Melding | Betekenis |
 |---|---|
+| Opgeslagen als concept | Opgeslagen, nog niet live. Publiceer via het overzicht. |
 | Bezig met publiceren… | Opgeslagen, de site wordt bijgewerkt. Even wachten. |
 | Opgeslagen en live op de site | Klaar. |
 | Niet opgeslagen, controleer: … | Er klopt iets niet in de invoer (bijv. verplicht veld leeg). Pas aan en sla opnieuw op. |
@@ -47,6 +55,7 @@ Je blijft 30 dagen ingelogd. Uitloggen kan rechtsboven.
 ## Voor de beheerder
 
 - **Toegang geven of intrekken:** Vercel → Project → Settings → Environment Variables → `BEHEER_EMAILS` (komma-gescheiden Google-adressen) aanpassen en daarna **Redeploy**.
+- **Concept en live:** opslaan gaat naar branch `concept` (`GITHUB_BRANCH=concept`), Publiceren merget die naar `main` (`GITHUB_PUBLISH_BRANCH`). De branch `concept` wordt bij de eerste opslag vanzelf aangemaakt. Vercel-previews van `concept` zijn alleen zichtbaar als Deployment Protection voor previews uit staat.
 - **Iets terugdraaien:** elke opslag is een commit op GitHub met de naam van de editor. Revert die commit, of zet in Vercel een vorige deploy terug via *Promote*.
 - **GitHub-token verloopt** (max. 1 jaar). Daarna mislukt opslaan; de site blijft werken. Maak een nieuw fine-grained token (alleen deze repo, Contents read/write, Deployments read) en zet het in Vercel als `GITHUB_TOKEN`.
 - Alle instellingen staan in `.env.example`.

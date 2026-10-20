@@ -21,6 +21,7 @@ export default defineConfig({
       GITHUB_TOKEN: envField.string(secret),
       GITHUB_REPO: envField.string({ ...secret, default: 'JorreSpijker/dezwaluwen-website' }),
       GITHUB_BRANCH: envField.string({ ...secret, default: 'main' }),
+      GITHUB_PUBLISH_BRANCH: envField.string({ ...secret, default: 'main' }),
     },
   },
 });

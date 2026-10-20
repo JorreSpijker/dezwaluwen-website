@@ -20,7 +20,7 @@ type Props = {
   body: string;
   imageUrl: string | null;
   categories: string[];
-  // Gezet na herladen door opslaan: commit om de deploy te volgen ('' = lokaal)
+  // Gezet na herladen door opslaan: commit om de deploy te volgen ('' = lokaal, 'concept' = nog niet gepubliceerd)
   savedCommit?: string;
 };
 
@@ -112,7 +112,7 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
     setState({ status: 'saving' });
     // Tekst niet aangeraakt: origineel meesturen, zodat opmaak van de markdown gelijk blijft
     const markdown = bodyChanged ? editor.getMarkdown() : body;
-    const result = await post<{ slug: string; sha: string; commit: string | null }>('/api/beheer/news', {
+    const result = await post<{ slug: string; sha: string; commit: string | null; draft: boolean }>('/api/beheer/news', {
       action: 'save',
       slug,
       sha,
@@ -123,7 +123,7 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
     if (result.status === 'saved') {
       // Nieuw bericht of nieuwe foto: herladen, zodat pad en versie kloppen
       if (!slug || image) {
-        location.href = `/beheer/nieuws/${result.data.slug}?opgeslagen=${result.data.commit ?? ''}`;
+        location.href = `/beheer/nieuws/${result.data.slug}?opgeslagen=${result.data.draft ? 'concept' : (result.data.commit ?? '')}`;
         return;
       }
       setSha(result.data.sha);
@@ -197,7 +197,7 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
               <dt>Status</dt>
               <dd>{slug ? 'Gepubliceerd' : 'Nog niet geplaatst'}</dd>
             </dl>
-            {state.status === 'idle' && savedCommit !== undefined ? <DeployStatus commit={savedCommit || null} /> : <SaveStatus state={state} />}
+            {state.status === 'idle' && savedCommit !== undefined ? <DeployStatus commit={savedCommit || null} draft={savedCommit === 'concept'} /> : <SaveStatus state={state} />}
             {slug && (
               <button type="button" className="link-danger" disabled={state.status === 'saving'} onClick={onDelete}>
                 Verwijderen

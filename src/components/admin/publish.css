@@ -1,0 +1,57 @@
+/* Overzicht: ongepubliceerde wijzigingen en de knop Publiceren */
+
+.publish {
+  margin-bottom: 28px;
+  padding: 20px;
+  background: #fff;
+  border: 2px solid var(--orange);
+  border-radius: 14px;
+}
+
+.publish.is-empty {
+  padding: 14px 20px;
+  border: 1px solid var(--line);
+  color: var(--text-2);
+}
+
+.publish.is-empty p {
+  margin: 0;
+}
+
+.publish h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-head);
+  font-size: 18px;
+  color: var(--blue);
+}
+
+.publish ul {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  line-height: 1.6;
+}
+
+.publish-status,
+.publish-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.publish-meta {
+  margin: 0 0 14px;
+}
+
+.publish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.publish-actions .publish-meta {
+  margin: 0;
+}
+
+.publish .save-status:first-child {
+  margin: 0;
+}

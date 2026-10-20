@@ -5,8 +5,8 @@ export default function SaveStatus({ state }: { state: SaveState }) {
   if (state.status === 'idle') return null;
   if (state.status === 'saving') return <p className="save-status">Bezig met opslaan…</p>;
   if (state.status === 'saved') {
-    const { commit } = state.data as { commit?: string | null };
-    return <DeployStatus key={commit ?? ''} commit={commit ?? null} />;
+    const { commit, draft } = state.data as { commit?: string | null; draft?: boolean };
+    return <DeployStatus key={commit ?? ''} commit={commit ?? null} draft={draft} />;
   }
   if (state.status === 'invalid') {
     return (

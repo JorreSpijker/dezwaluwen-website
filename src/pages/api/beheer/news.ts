@@ -67,8 +67,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // Laatste vangnet: alleen toegestane paden
   if (!changes.every((c) => canAccess(c.path))) return new Response('Geen toegang', { status: 403 });
   try {
-    const { shas, commit: sha } = await commit(changes, message, { name: user.name, email: user.email });
-    return Response.json({ slug, sha: shas[`${NEWS_DIR}/${slug}.md`], commit: sha });
+    const { shas, commit: sha, draft } = await commit(changes, message, { name: user.name, email: user.email });
+    return Response.json({ slug, sha: shas[`${NEWS_DIR}/${slug}.md`], commit: sha, draft });
   } catch (error) {
     if (error instanceof ConflictError) return Response.json({ message: error.message }, { status: 409 });
     throw error;

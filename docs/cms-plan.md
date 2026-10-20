@@ -121,20 +121,20 @@ Publiceren ─► GitHub merge `concept` → `main` ─► Vercel deployt produc
 
 ### Stappen
 
-**10. Concept-branch als opslagdoel**
+**✅ 10. Concept-branch als opslagdoel**
 - `GITHUB_BRANCH=concept` (bestaande opslag in `src/lib/admin/repo.ts` blijft ongewijzigd). Nieuwe env `GITHUB_PUBLISH_BRANCH` (default `main`).
 - Branch `concept` eenmalig aanmaken vanaf `main` (handmatig, of `publish` maakt hem aan als hij ontbreekt).
 - Melding na opslaan wordt: "Opgeslagen als concept. Publiceer via het overzicht." (geen deploy-polling meer per opslag).
 → verify: opslaan maakt commit op `concept`, productie ongewijzigd.
 
-**11. Overzicht van ongepubliceerde wijzigingen**
+**✅ 11. Overzicht van ongepubliceerde wijzigingen**
 - `repo.ts`: `pending()` via `GET /compare/{main}...{concept}` → aantal commits, gewijzigde bestanden (pad + status), auteurs.
 - Bestandspaden vertalen naar leesbare namen: "Nieuws: <titel/slug>", "Trainingstijden", "Teams & Sportlink", "Bestuur & commissies", foto's samenvoegen met hun bericht.
 - Preview-url: laatste GitHub-deployment voor de head van `concept` → `environment_url` (hergebruik patroon uit `deployState()`).
 - In `src/pages/beheer/index.astro`: paneel bovenaan met lijst, "Bekijk preview" en knop **Publiceren**; leeg = "Alles is gepubliceerd".
 → verify: na twee opslagen toont paneel 2 wijzigingen met namen en werkende preview-link.
 
-**12. Publiceren**
+**✅ 12. Publiceren**
 - `POST /api/beheer/publish`: `POST /merges {base: main, head: concept}` met bericht `content: gepubliceerd door <naam>`.
   - 201 → merge-commit-sha terug; 204 → niets te publiceren; 409 → conflict-melding ("neem contact op met beheerder").
 - Na succes: `POST /merges {base: concept, head: main}` zodat `concept` code-wijzigingen van `main` meekrijgt.
@@ -142,7 +142,7 @@ Publiceren ─► GitHub merge `concept` → `main` ─► Vercel deployt produc
 - Lokaal zonder `GITHUB_TOKEN`: paneel toont "Publiceren werkt alleen online" (werkmap = direct).
 → verify: publiceren → productie toont wijzigingen, paneel weer leeg, deploystatus "live".
 
-**13. Handleiding bijwerken**
+**✅ 13. Handleiding bijwerken**
 `docs/beheer-handleiding.md`: concept, preview bekijken, publiceren.
 
 ### Vercel-instellingen

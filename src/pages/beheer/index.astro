@@ -1,9 +1,35 @@
 ---
+import PublishPanel from '../../components/admin/PublishPanel';
 import Beheer from '../../layouts/Beheer.astro';
+import { parseNews } from '../../lib/admin/news';
+import { drafts, pending, previewUrl, readFile } from '../../lib/admin/repo';
 
 export const prerender = false;
 
 const user = Astro.locals.user!;
+
+// Ongepubliceerde wijzigingen met leesbare namen; foto's horen bij hun bericht
+const names: Record<string, string> = {
+  'src/data/trainingstijden.json': 'Trainingstijden',
+  'src/data/club.json': 'Teams & Sportlink',
+  'src/data/organisatie.json': 'Bestuur & commissies',
+};
+const statuses: Record<string, string> = { added: 'nieuw', removed: 'verwijderd' };
+const changes = drafts ? await pending() : null;
+const files = changes?.files ?? [];
+const hasNews = files.some((f) => f.path.endsWith('.md'));
+const items = await Promise.all(
+  files
+    .filter((f) => !(hasNews && f.path.startsWith('src/assets/news/')))
+    .map(async (f) => {
+      let label = names[f.path] ?? f.path;
+      const news = f.path.match(/^src\/content\/news\/(.+)\.md$/);
+      if (news) label = `Nieuws: ${f.status === 'removed' ? news[1] : parseNews((await readFile(f.path)).content).meta.title}`;
+      else if (f.path.startsWith('src/assets/news/')) label = 'Nieuwsfoto';
+      return { label, status: statuses[f.status] ?? 'aangepast' };
+    }),
+);
+const preview = changes?.head ? await previewUrl(changes.head) : null;
 const sections = [
   { href: '/beheer/nieuws', title: 'Nieuws', text: 'Berichten schrijven, aanpassen en vastpinnen' },
   { href: '/beheer/trainingstijden', title: 'Trainingstijden', text: 'Tijden en velden voor veld en zaal' },
@@ -14,7 +40,14 @@ const sections = [
 
 <Beheer title="Overzicht">
   <h1>Hoi {user.name}</h1>
-  <p class="lead">Wat wil je aanpassen? Opgeslagen wijzigingen staan na ongeveer een minuut op de site.</p>
+  <p class="lead">
+    {
+      drafts
+        ? 'Wat wil je aanpassen? Opgeslagen wijzigingen komen hieronder te staan; met Publiceren zet je ze in één keer live.'
+        : 'Wat wil je aanpassen? Opgeslagen wijzigingen staan na ongeveer een minuut op de site.'
+    }
+  </p>
+  {drafts && <PublishPanel client:load items={items} authors={changes!.authors} previewUrl={preview} />}
   <div class="grid">
     {
       sections.map((s) => (
