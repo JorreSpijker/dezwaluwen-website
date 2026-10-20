@@ -11,6 +11,8 @@ export default defineConfig({
   // Astro 7 haalt standaard spaties tussen inline-elementen weg ('jsx'); true = gedrag Astro 6
   compressHTML: true,
   integrations: [react()],
+  // Grid is CJS en require()t de ESM-only react-resize-detector; meebundelen voorkomt ERR_REQUIRE_ESM op Vercel
+  vite: { ssr: { noExternal: ['react-datasheet-grid'] } },
   // Instellingen voor /cms; zie .env.example
   env: {
     schema: {
