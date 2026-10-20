@@ -18,9 +18,14 @@ export type NewsMeta = {
 
 const isoDate = (value: unknown) => (value instanceof Date ? value.toISOString().slice(0, 10) : String(value ?? ''));
 
-export function parseNews(content: string): { meta: NewsMeta; body: string } {
+// Markdown-bestand splitsen in frontmatter (als object) en tekst; ook gebruikt voor pagina's
+export function splitFrontmatter(content: string): { data: Record<string, any>; body: string } {
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  const data = (match ? parse(match[1]) : {}) ?? {};
+  return { data: (match ? parse(match[1]) : {}) ?? {}, body: (match ? match[2] : content).replace(/^\n+/, '') };
+}
+
+export function parseNews(content: string): { meta: NewsMeta; body: string } {
+  const { data, body } = splitFrontmatter(content);
   return {
     meta: {
       title: data.title ?? '',
@@ -31,7 +36,7 @@ export function parseNews(content: string): { meta: NewsMeta; body: string } {
       imageAlt: data.imageAlt ?? '',
       sticky: data.sticky === true,
     },
-    body: (match ? match[2] : content).replace(/^\n+/, ''),
+    body,
   };
 }
 

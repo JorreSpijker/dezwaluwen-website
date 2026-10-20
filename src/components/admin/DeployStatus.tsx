@@ -48,7 +48,7 @@ export default function DeployStatus({ commit, draft = false, publish = false }:
   if (draft) {
     return (
       <p className="save-status is-ok" role="status">
-        Opgeslagen als concept. Zet het live met <a href="/cms">Publiceren in het overzicht</a>.
+        Opgeslagen als concept. Zet het live met <a href="/cms/status">Publiceren op Status</a>.
       </p>
     );
   }

@@ -1,41 +1,14 @@
 ---
-import PublishPanel from '../../components/admin/PublishPanel';
 import Cms from '../../layouts/Cms.astro';
-import { parseNews } from '../../lib/admin/news';
-import { drafts, pending, previewUrl, readFile } from '../../lib/admin/repo';
+import { drafts, pending } from '../../lib/admin/repo';
+import { sections } from '../../lib/admin/sections';
 
 export const prerender = false;
 
 const user = Astro.locals.user!;
 
-// Ongepubliceerde wijzigingen met leesbare namen; foto's horen bij hun bericht
-const names: Record<string, string> = {
-  'src/data/trainingstijden.json': 'Trainingstijden',
-  'src/data/club.json': 'Teams & Sportlink',
-  'src/data/organisatie.json': 'Bestuur & commissies',
-};
-const statuses: Record<string, string> = { added: 'nieuw', removed: 'verwijderd' };
-const changes = drafts ? await pending() : null;
-const files = changes?.files ?? [];
-const hasNews = files.some((f) => f.path.endsWith('.md'));
-const items = await Promise.all(
-  files
-    .filter((f) => !(hasNews && f.path.startsWith('src/assets/news/')))
-    .map(async (f) => {
-      let label = names[f.path] ?? f.path;
-      const news = f.path.match(/^src\/content\/news\/(.+)\.md$/);
-      if (news) label = `Nieuws: ${f.status === 'removed' ? news[1] : parseNews((await readFile(f.path)).content).meta.title}`;
-      else if (f.path.startsWith('src/assets/news/')) label = 'Nieuwsfoto';
-      return { label, status: statuses[f.status] ?? 'aangepast' };
-    }),
-);
-const preview = changes?.head ? await previewUrl(changes.head) : null;
-const sections = [
-  { href: '/cms/nieuws', title: 'Nieuws', text: 'Berichten schrijven, aanpassen en vastpinnen' },
-  { href: '/cms/trainingstijden', title: 'Trainingstijden', text: 'Tijden en velden voor veld en zaal' },
-  { href: '/cms/organisatie', title: 'Bestuur & commissies', text: 'Leden, taken en contactgegevens' },
-  { href: '/cms/club', title: 'Teams & Sportlink', text: 'Teams, teamcodes en poules' },
-];
+// Alleen of er iets klaarstaat; de lijst en Publiceren staan op /cms/status
+const waiting = drafts && (await pending()).files.length > 0;
 ---
 
 <Cms title="Overzicht">
@@ -43,11 +16,18 @@ const sections = [
   <p class="lead">
     {
       drafts
-        ? 'Wat wil je aanpassen? Opgeslagen wijzigingen komen hieronder te staan; met Publiceren zet je ze in één keer live.'
+        ? 'Wat wil je aanpassen? Opgeslagen wijzigingen staan klaar op Status; met Publiceren zet je ze in één keer live.'
         : 'Wat wil je aanpassen? Opgeslagen wijzigingen staan na ongeveer een minuut op de site.'
     }
   </p>
-  {drafts && <PublishPanel client:load items={items} authors={changes!.authors} previewUrl={preview} />}
+  {
+    waiting && (
+      <a href="/cms/status" class="waiting">
+        <span class="dot" aria-hidden="true" />
+        Er staan wijzigingen klaar die nog niet live zijn. <b>Bekijken en publiceren →</b>
+      </a>
+    )
+  }
   <div class="grid">
     {
       sections.map((s) => (
@@ -65,6 +45,35 @@ const sections = [
     margin: 0 0 8px;
     font-family: var(--font-head);
     color: var(--blue);
+  }
+
+  .waiting {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 28px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    color: var(--ink);
+  }
+
+  .waiting:hover {
+    text-decoration: none;
+    border-color: var(--blue);
+  }
+
+  .waiting b {
+    color: var(--blue);
+  }
+
+  .waiting .dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--orange);
   }
 
   .lead {

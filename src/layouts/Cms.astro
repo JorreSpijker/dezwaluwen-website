@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { sections } from '../lib/admin/sections';
 
 interface Props {
   title: string;
@@ -9,6 +10,20 @@ interface Props {
 
 const { title, wide = false } = Astro.props;
 const { user } = Astro.locals;
+const path = Astro.url.pathname.replace(/\/$/, '');
+
+// Lijniconen (24×24, stroke = currentColor)
+const icons: Record<string, string> = {
+  home: 'M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10',
+  news: 'M4 5h13v14H6a2 2 0 0 1-2-2V5zM17 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5M8 16h3',
+  page: 'M6 3h8l4 4v14H6V3zM14 3v4h4M9 12h6M9 16h6',
+  clock: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2',
+  users: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.5 3.5 0 0 1 0 6.5M18 14c2 .8 3 3 3 6',
+  shield: 'M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6l8-3z',
+  pulse: 'M3 12h4l3-7 4 14 3-7h4',
+};
+const nav = [{ href: '/cms', title: 'Overzicht', icon: 'home' }, { href: '/cms/status', title: 'Status', icon: 'pulse' }, ...sections];
+const isActive = (href: string) => (href === '/cms' ? path === '/cms' : path === href || path.startsWith(`${href}/`));
 ---
 
 <!doctype html>
@@ -23,21 +38,71 @@ const { user } = Astro.locals;
   <body>
     <header class="bar">
       <a href="/cms" class="brand">
-        <img src="/logo.svg" alt="" width="32" height="33" />
-        CMS
+        <div class="brand-inner">
+          <img src="/logo.svg" alt="" width="64" height="66" />
+          <span>
+            CMS
+          </span>
+        </div>
       </a>
       {
         user && (
-          <form method="post" action="/api/cms/logout" class="user">
-            <span>{user.name}</span>
-            <button type="submit">Uitloggen</button>
-          </form>
+          <div class="right">
+            {/* Gevuld door het script hieronder: oranje = nog niet gepubliceerd, groen = alles live */}
+            <a href="/cms/status" class="status" data-status hidden>
+              <span class="dot" aria-hidden="true" />
+              <span data-status-label />
+            </a>
+            <form method="post" action="/api/cms/logout" class="user">
+              <span>{user.name}</span>
+              <button type="submit">Uitloggen</button>
+            </form>
+          </div>
         )
       }
     </header>
-    <main class:list={['main', { wide }]}>
-      <slot />
-    </main>
+    <div class:list={['shell', { 'no-nav': !user }]}>
+      {
+        user && (
+          <nav class="side" aria-label="CMS">
+            {nav.map((item) => (
+              <a href={item.href} class:list={['side-link', { 'is-active': isActive(item.href) }]} aria-current={isActive(item.href) ? 'page' : undefined}>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path d={icons[item.icon]} />
+                </svg>
+                <span>{item.title}</span>
+              </a>
+            ))}
+          </nav>
+        )
+      }
+      <main class:list={['main', { wide }]}>
+        <slot />
+      </main>
+    </div>
+    <script>
+      // Niet op de loginpagina (geen bovenbalk-status)
+      const status = document.querySelector<HTMLElement>('[data-status]');
+      const label = status?.querySelector<HTMLElement>('[data-status-label]');
+
+      async function refresh() {
+        if (!status || !label) return;
+        try {
+          const res = await fetch('/api/cms/status');
+          if (!res.ok) return;
+          const { pending } = await res.json();
+          status.classList.toggle('is-pending', pending);
+          label.textContent = pending ? 'Niet gepubliceerd' : 'Alles gepubliceerd';
+          status.title = pending ? 'Er staan wijzigingen klaar. Publiceer ze op Status.' : 'Alle wijzigingen staan live op de site.';
+          status.hidden = false;
+        } catch {
+          // Geen verbinding: rondje blijft verborgen of houdt de vorige stand
+        }
+      }
+
+      refresh();
+      addEventListener('cms:saved', refresh);
+    </script>
   </body>
 </html>
 
@@ -51,7 +116,7 @@ const { user } = Astro.locals;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px var(--gutter);
+    padding: 12px 24px;
     background: #fff;
     border-bottom: 1px solid var(--line);
   }
@@ -65,9 +130,61 @@ const { user } = Astro.locals;
     font-size: 18px;
     color: var(--blue);
   }
+  
+  .brand-inner {
+    position: absolute;
+    top: 0;
+    left: 24px;
+    z-index: 9999;
+    background: #fff;
+    padding: 6px 12px 0 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .brand img {
+  }
 
   .brand:hover {
     text-decoration: none;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+
+  .status:hover {
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .status[hidden] {
+    display: none;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 3px var(--green-soft);
+  }
+
+  .status.is-pending .dot {
+    background: var(--orange);
+    box-shadow: 0 0 0 3px rgba(238, 90, 54, 0.18);
   }
 
   .user {
@@ -83,7 +200,66 @@ const { user } = Astro.locals;
     color: var(--blue);
   }
 
+  /* Zijbalk links, inhoud rechts */
+  .shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .shell.no-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: calc(100vh - 57px);
+    padding: 40px 12px 20px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+  }
+
+  .side-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .side-link svg {
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    color: var(--muted);
+  }
+
+  .side-link:hover {
+    text-decoration: none;
+    background: var(--surface);
+  }
+
+  .side-link.is-active {
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+
+  .side-link.is-active svg {
+    color: var(--blue);
+  }
+
   .main {
+    width: 100%;
     max-width: var(--max);
     margin-inline: auto;
     padding: 40px var(--gutter) 80px;
@@ -92,5 +268,44 @@ const { user } = Astro.locals;
   .main.wide {
     max-width: 1600px;
     padding-top: 24px;
+  }
+
+  /* Smal scherm: zijbalk wordt een strook onder de bovenbalk */
+  @media (max-width: 960px) {
+    /* Groot logo over de balk alleen op desktop */
+    .brand-inner {
+      position: static;
+      padding: 0;
+    }
+
+    .brand img {
+      width: 32px;
+      height: auto;
+    }
+
+    .shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .side {
+      position: static;
+      flex-direction: row;
+      min-height: 0;
+      padding: 8px 12px;
+      overflow-x: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-link {
+      flex: none;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .user span,
+    [data-status-label] {
+      display: none;
+    }
   }
 </style>

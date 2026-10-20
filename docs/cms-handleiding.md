@@ -1,6 +1,6 @@
 # Handleiding CMS website KV de Zwaluwen
 
-Met het CMS pas je zelf nieuws, trainingstijden, bestuur & commissies en teams aan. Wat je opslaat is eerst een **concept**: het staat nog niet op de site. Met **Publiceren** in het overzicht zet je alle wijzigingen in één keer live.
+Met het CMS pas je zelf nieuws, pagina's, trainingstijden, bestuur & commissies en teams aan. Wat je opslaat is eerst een **concept**: het staat nog niet op de site. Met **Publiceren** op **Status** zet je alle wijzigingen in één keer live.
 
 ## Inloggen
 
@@ -20,6 +20,16 @@ Je blijft 30 dagen ingelogd. Uitloggen kan rechtsboven.
 - **Tekst:** gebruik de knoppen boven het tekstvak voor kopjes, vet, schuin, lijstjes en links.
 - **Verwijderen:** open het bericht en klik **Verwijderen**. Dit kan niet ongedaan worden gemaakt.
 
+## Pagina's
+
+- **Bewerken:** Pagina's → klik op een pagina. Titel, intro en tekst pas je aan op de pagina zelf, net als bij nieuws (ook het **/**-menu en tabellen).
+- **Nieuwe pagina:** Pagina's → *+ Nieuwe pagina*. Het **adres** (bijv. `/sponsoren/`) volgt de titel; pas het aan vóór je plaatst, daarna kan het niet meer. Een nieuwe pagina staat niet vanzelf in het menu: vraag de beheerder hem toe te voegen.
+- **Afbeelding:** optioneel. Vul ook de beschrijving in.
+- **Kruimelpad:** de menugroep boven de titel, bijv. "Nieuw lid?".
+- **Beschrijving voor Google:** één of twee zinnen die in zoekresultaten staan.
+- **Feiten:** blokjes onder de foto. Kies *Titel met tekst* of *Groot cijfer met tekst*. In een cijfer wordt `{teams}` automatisch het aantal teams.
+- **Vast blok:** de korfbalveldtekening of de lijst met teams, na de eerste alinea.
+
 ## Trainingstijden
 
 - Kies bovenaan **Veld** of **Zaal**.
@@ -36,7 +46,8 @@ Je blijft 30 dagen ingelogd. Uitloggen kan rechtsboven.
 
 ## Publiceren
 
-- Op het **overzicht** (dezwaluwen.nl/cms) staat bovenaan welke wijzigingen nog niet gepubliceerd zijn, en door wie.
+- Op **Status** (dezwaluwen.nl/cms/status) staat welke wijzigingen nog niet gepubliceerd zijn, en door wie. Het rondje rechtsboven is oranje zolang er iets klaarstaat, groen als alles live is.
+- Daaronder zie je wanneer de site voor het laatst is livegezet en door wie, en de laatste 10 keer daarvoor.
 - **Bekijk preview** opent de site zoals hij wordt na publiceren. Na opslaan duurt het een paar minuten voor de preview klaar is.
 - Klik **Publiceren** om alles live te zetten. Na ongeveer een minuut staat het op de site.
 - Publiceren zet de wijzigingen van **iedereen** live, niet alleen die van jou.
@@ -45,7 +56,7 @@ Je blijft 30 dagen ingelogd. Uitloggen kan rechtsboven.
 
 | Melding | Betekenis |
 |---|---|
-| Opgeslagen als concept | Opgeslagen, nog niet live. Publiceer via het overzicht. |
+| Opgeslagen als concept | Opgeslagen, nog niet live. Publiceer via Status. |
 | Bezig met publiceren… | Opgeslagen, de site wordt bijgewerkt. Even wachten. |
 | Opgeslagen en live op de site | Klaar. |
 | Niet opgeslagen, controleer: … | Er klopt iets niet in de invoer (bijv. verplicht veld leeg). Pas aan en sla opnieuw op. |

@@ -1,0 +1,202 @@
+---
+import PublishPanel from '../../components/admin/PublishPanel';
+import Cms from '../../layouts/Cms.astro';
+import { deployHistory, pendingItems } from '../../lib/admin/status';
+import { drafts } from '../../lib/admin/repo';
+
+export const prerender = false;
+
+const [{ items, authors, preview }, history] = await Promise.all([pendingItems(), deployHistory()]);
+const last = history.find((d) => d.state === 'ready');
+
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' }).format(new Date(date));
+const states = { ready: 'Live', pending: 'Bezig', error: 'Mislukt' } as const;
+---
+
+<Cms title="Status">
+  <a href="/cms" class="back">← Overzicht</a>
+  <h1>Status</h1>
+  <p class="intro">Wat klaarstaat om live te zetten, en wanneer de site voor het laatst is bijgewerkt.</p>
+
+  {drafts && <PublishPanel client:load items={items} authors={authors} previewUrl={preview} />}
+
+  <section class="card">
+    <h2>Laatst livegezet</h2>
+    {
+      last ? (
+        <p class="last">
+          <span class="dot is-ready" aria-hidden="true" />
+          <span>
+            <b>{formatDate(last.date)}</b> door {last.who}
+            <span class="muted"> · {last.what}</span>
+          </span>
+        </p>
+      ) : (
+        <p class="muted">{history.length ? 'Nog geen geslaagde deploy gevonden.' : 'Geen deploys gevonden. Dit werkt alleen online, niet lokaal zonder GitHub-token.'}</p>
+      )
+    }
+  </section>
+
+  {
+    history.length > 0 && (
+      <section class="card">
+        <h2>Geschiedenis</h2>
+        <ul class="history">
+          {history.map((d) => (
+            <li>
+              <span class:list={['dot', `is-${d.state}`]} title={states[d.state]} />
+              <span class="when">{formatDate(d.date)}</span>
+              <span class="who">{d.who}</span>
+              <span class="what">{d.what}</span>
+              <span class:list={['state', `is-${d.state}`]}>{states[d.state]}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Cms>
+
+<style>
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 8px 0;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .intro {
+    margin: 0 0 28px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  .card {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+
+  h2 {
+    margin: 0 0 12px;
+    font-family: var(--font-head);
+    font-size: 18px;
+    color: var(--blue);
+  }
+
+  .last {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin: 0;
+  }
+
+  .muted {
+    margin: 0;
+    color: var(--text-2);
+  }
+
+  .dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+
+  .dot.is-ready {
+    background: var(--green);
+  }
+
+  .dot.is-pending {
+    background: var(--orange);
+  }
+
+  .dot.is-error {
+    background: var(--red);
+  }
+
+  .history {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .history li {
+    display: grid;
+    grid-template-columns: 10px 170px 180px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+
+  .history li + li {
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .when {
+    color: var(--text-2);
+  }
+
+  .who {
+    font-weight: 600;
+  }
+
+  .what {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--text-2);
+  }
+
+  .state {
+    font-weight: 600;
+  }
+
+  .state.is-ready {
+    color: var(--green);
+  }
+
+  .state.is-pending {
+    color: var(--orange);
+  }
+
+  .state.is-error {
+    color: var(--red);
+  }
+
+  @media (max-width: 760px) {
+    .history li {
+      grid-template-columns: 10px minmax(0, 1fr) auto;
+      row-gap: 2px;
+    }
+
+    .when {
+      grid-column: 2;
+    }
+
+    .who {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .what {
+      grid-column: 2;
+      grid-row: 3;
+      white-space: normal;
+    }
+
+    .state {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+</style>

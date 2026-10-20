@@ -1,6 +1,6 @@
 # Todo
-[] Pagina aanpasbaar maken in CMS
-[] Tiptap uitbreiden met meer mogelijke nodes
+[X] Pagina aanpasbaar maken in CMS
+[X] Tiptap uitbreiden met meer mogelijke nodes
 [] Plan voor afbeelding uploads.
 
 ## Automatisch herbouwen met Vercel Cron

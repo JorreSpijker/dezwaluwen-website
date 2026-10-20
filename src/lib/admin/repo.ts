@@ -181,11 +181,36 @@ export async function publish(name: string): Promise<string | null> {
 }
 
 // Status van de Vercel-deploy voor een commit; Vercel meldt deploys als GitHub-deployments
-export async function deployState(sha: string): Promise<'pending' | 'ready' | 'error'> {
-  const [deployment] = (await github(`/deployments?sha=${sha}&per_page=1`)) ?? [];
-  if (!deployment) return 'pending';
-  const [status] = (await github(`/deployments/${deployment.id}/statuses?per_page=1`)) ?? [];
+export type DeployState = 'pending' | 'ready' | 'error';
+
+// Laatste status van een GitHub-deployment omgezet naar bezig / live / mislukt
+async function latestState(id: number): Promise<DeployState> {
+  const [status] = (await github(`/deployments/${id}/statuses?per_page=1`)) ?? [];
   if (status?.state === 'success') return 'ready';
   if (status?.state === 'failure' || status?.state === 'error') return 'error';
   return 'pending';
+}
+
+export async function deployState(sha: string): Promise<DeployState> {
+  const [deployment] = (await github(`/deployments?sha=${sha}&per_page=1`)) ?? [];
+  if (!deployment) return 'pending';
+  return latestState(deployment.id);
+}
+
+// Laatste productie-deploys van Vercel, nieuwste eerst, met het commitbericht en de auteur
+export async function productionDeploys(count: number) {
+  if (local) return [];
+  const deployments: { id: number; sha: string; created_at: string }[] = (await github(`/deployments?environment=Production&per_page=${count}`)) ?? [];
+  return Promise.all(
+    deployments.map(async (d) => {
+      const [state, commit] = await Promise.all([latestState(d.id), github(`/commits/${d.sha}`)]);
+      return {
+        sha: d.sha,
+        date: d.created_at,
+        state,
+        message: (commit?.commit.message ?? '').split('\n')[0] as string,
+        author: (commit?.commit.author.name ?? '') as string,
+      };
+    }),
+  );
 }

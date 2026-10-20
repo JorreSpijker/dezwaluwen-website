@@ -110,3 +110,29 @@ export const newsFields = {
 // In /cms is de foto een pad naar src/assets, gezien vanaf het md-bestand
 export const newsImage = z.string().regex(/^\.\.\/\.\.\/assets\/[a-z0-9_/-]+\.(webp|jpe?g|png)$/, 'foto moet in src/assets staan');
 export const newsFrontmatter = z.strictObject({ ...newsFields, image: newsImage });
+
+// --- Pagina's: frontmatter van src/content/pages/*.md ---
+// Slugs van bestaande routes (en 'nieuw' voor /cms/paginas/nieuw); een pagina mag die niet gebruiken
+export const reservedSlugs = ['nieuws', 'teams', 'cms', 'api', 'proefles', 'trainingstijden', 'bestuur-en-commissies', 'nieuw'];
+export const pageSlug = z
+  .string()
+  .regex(/^[a-z0-9-]+$/, 'alleen kleine letters, cijfers en -')
+  .refine((s) => !reservedSlugs.includes(s), 'deze naam is al in gebruik op de site');
+
+// Vaste blokken die na de eerste alinea komen
+export const pageBlocks = { veld: 'Korfbalveld (tekening)', teams: 'Teams (uit trainingstijden)' } as const;
+
+export const pageFields = {
+  title: z.string().min(1),
+  // Voor zoekmachines en bij delen
+  description: z.string().min(1),
+  // Kruimelpad: Home / <section>
+  section: optional(z.string()),
+  lead: z.string().min(1),
+  imageAlt: z.string().default(''),
+  // Feiten onder de foto; cijfers = groot getal met tekst eronder, {teams} = aantal teams
+  factsStyle: z.enum(['tekst', 'cijfers']).default('tekst'),
+  facts: z.array(z.strictObject({ title: z.string().min(1), text: z.string().min(1) })).default([]),
+  block: optional(z.enum(Object.keys(pageBlocks) as [keyof typeof pageBlocks])),
+};
+export const pageFrontmatter = z.strictObject({ ...pageFields, image: optional(newsImage) });

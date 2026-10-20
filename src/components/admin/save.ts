@@ -10,7 +10,11 @@ export type SaveState<T = unknown> =
 export async function post<T>(url: string, body: unknown): Promise<SaveState<T>> {
   try {
     const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (res.ok) return { status: 'saved', data: await res.json() };
+    if (res.ok) {
+      // Statusrondje in de bovenbalk opnieuw laten ophalen
+      dispatchEvent(new Event('cms:saved'));
+      return { status: 'saved', data: await res.json() };
+    }
     if (res.status === 422) return { status: 'invalid', issues: (await res.json()).issues };
     if (res.status === 409) return { status: 'error', message: (await res.json()).message };
     if (res.status === 401) return { status: 'error', message: 'Je bent uitgelogd. Log opnieuw in; je wijzigingen gaan dan verloren, kopieer ze eerst.' };

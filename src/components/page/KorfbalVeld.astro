@@ -1,0 +1,129 @@
+---
+// Korfbalveld met twee vakken: vast blok voor pagina's (block: veld)
+---
+
+<figure class="field">
+  <svg viewBox="0 0 600 300" role="img" aria-labelledby="field-title">
+    <title id="field-title">Korfbalveld met twee vakken, in elk vak twee vrouwen en twee mannen per team</title>
+    <rect x="2" y="2" width="596" height="296" rx="14" class="field-bg" />
+    <line x1="300" y1="2" x2="300" y2="298" class="field-line" />
+    <circle cx="100" cy="150" r="9" class="korf" />
+    <circle cx="500" cy="150" r="9" class="korf" />
+    <text x="150" y="36" class="field-label">Vak A</text>
+    <text x="450" y="36" class="field-label">Vak B</text>
+    <!-- Team blauw: aanval in vak B, verdediging in vak A -->
+    <g class="team-blue">
+      <circle cx="190" cy="90" r="11" /><circle cx="230" cy="200" r="11" />
+      <rect x="150" y="215" width="20" height="20" rx="4" /><rect x="220" y="105" width="20" height="20" rx="4" />
+      <circle cx="410" cy="100" r="11" /><circle cx="450" cy="220" r="11" />
+      <rect x="390" y="190" width="20" height="20" rx="4" /><rect x="530" y="80" width="20" height="20" rx="4" />
+    </g>
+    <!-- Team oranje: aanval in vak A, verdediging in vak B -->
+    <g class="team-orange">
+      <circle cx="160" cy="70" r="11" /><circle cx="60" cy="230" r="11" />
+      <rect x="120" y="190" width="20" height="20" rx="4" /><rect x="250" y="140" width="20" height="20" rx="4" />
+      <circle cx="430" cy="70" r="11" /><circle cx="480" cy="250" r="11" />
+      <rect x="360" y="215" width="20" height="20" rx="4" /><rect x="545" y="120" width="20" height="20" rx="4" />
+    </g>
+  </svg>
+  <figcaption>
+    <span><i class="key key-round"></i> vrouw</span>
+    <span><i class="key key-square"></i> man</span>
+    <span><i class="key key-korf"></i> korf</span>
+    <span><i class="key key-blue"></i> team 1</span>
+    <span><i class="key key-orange"></i> team 2</span>
+    Na elke twee doelpunten wisselen de vakken: aanvallers worden verdedigers en andersom.
+  </figcaption>
+</figure>
+
+<style>
+  .field {
+    margin: 28px 0;
+  }
+
+  .field svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .field-bg {
+    fill: #e6f2e9;
+    stroke: #b9d9c2;
+    stroke-width: 2;
+  }
+
+  .field-line {
+    stroke: #fff;
+    stroke-width: 4;
+  }
+
+  .korf {
+    fill: #ffd400;
+    stroke: var(--ink);
+    stroke-width: 3;
+  }
+
+  .field-label {
+    font: 700 16px var(--font-body);
+    fill: #3f7a52;
+    text-anchor: middle;
+  }
+
+  .team-blue {
+    fill: var(--blue);
+  }
+
+  .team-orange {
+    fill: var(--orange);
+  }
+
+  .field figcaption {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .field figcaption span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .key {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: var(--ink);
+  }
+
+  .key-round {
+    border-radius: 50%;
+  }
+
+  .key-square {
+    border-radius: 3px;
+  }
+
+  .key-blue {
+    border-radius: 3px;
+    background: var(--blue);
+  }
+
+  .key-orange {
+    border-radius: 3px;
+    background: var(--orange);
+  }
+
+  .key-korf {
+    border-radius: 50%;
+    background: #ffd400;
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+</style>

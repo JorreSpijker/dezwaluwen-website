@@ -1,0 +1,26 @@
+---
+import PageEditor from '../../../components/admin/PageEditor';
+import Cms from '../../../layouts/Cms.astro';
+import { pageBlocks } from '../../../data/schemas';
+import { imagePath } from '../../../lib/admin/news';
+import { PAGES_DIR, parsePage, type PageMeta } from '../../../lib/admin/pages';
+import { exists, readFile } from '../../../lib/admin/repo';
+
+export const prerender = false;
+
+const slug = Astro.params.slug!;
+const isNew = slug === 'nieuw';
+const path = `${PAGES_DIR}/${slug}.md`;
+if (!isNew && (!/^[a-z0-9-]+$/.test(slug) || !(await exists(path)))) return Astro.redirect('/cms/paginas');
+
+const file = isNew ? null : await readFile(path);
+const { meta, body }: { meta: PageMeta; body: string } = file
+  ? parsePage(file.content)
+  : { meta: { title: '', description: '', section: '', lead: '', image: '', imageAlt: '', factsStyle: 'tekst', facts: [], block: '' }, body: '' };
+const imageUrl = meta.image ? `/api/cms/image?path=${encodeURIComponent(imagePath(meta.image))}` : null;
+const savedCommit = Astro.url.searchParams.get('opgeslagen') ?? undefined;
+---
+
+<Cms title={isNew ? 'Nieuwe pagina' : meta.title} wide>
+  <PageEditor client:load slug={isNew ? null : slug} sha={file?.sha ?? null} meta={meta} body={body} imageUrl={imageUrl} blocks={pageBlocks} savedCommit={savedCommit} />
+</Cms>

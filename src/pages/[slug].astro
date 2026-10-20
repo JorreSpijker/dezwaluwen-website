@@ -1,0 +1,386 @@
+---
+// Pagina's uit src/content/pages (aanpasbaar in /cms): intro, foto, feiten, tekst en promo.
+// Een vast blok (korfbalveld, teams) komt na de eerste alinea van de tekst.
+import { Image } from 'astro:assets';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import KorfbalVeld from '../components/page/KorfbalVeld.astro';
+import TeamGroups from '../components/page/TeamGroups.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { linkHref, menu } from '../data/menu';
+import { veld } from '../data/trainingstijden';
+import Base from '../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('pages')).map((page) => ({ params: { slug: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: CollectionEntry<'pages'> };
+const { title, description, section, lead, image, imageAlt, factsStyle, facts, block } = page.data;
+const promo = menu[0];
+
+const teamCount = veld.groups.reduce((count, group) => count + group.rows.length, 0);
+const factValue = (value: string) => value.replace('{teams}', String(teamCount));
+
+const html = page.rendered?.html ?? '';
+const end = html.indexOf('</p>');
+const cut = end < 0 ? html.length : end + 4;
+---
+
+<Base title={`${title} — KV de Zwaluwen`} description={description}>
+  <Header />
+  <main class="page container">
+    <header class="intro">
+      <nav class="crumbs" aria-label="Kruimelpad">
+        <a href="/">Home</a>
+        {
+          section && (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>{section}</span>
+            </>
+          )
+        }
+      </nav>
+      <h1 class="title">{title}</h1>
+      <p class="lead">{lead}</p>
+    </header>
+
+    {
+      image && (
+        <div class="photo">
+          <Image src={image} alt={imageAlt} widths={[640, 1280]} sizes="(max-width: 959px) 100vw, 1168px" loading="eager" />
+        </div>
+      )
+    }
+
+    {
+      facts.length > 0 && (
+        <section class:list={['facts', `is-${factsStyle}`]} aria-label={`${title} in het kort`}>
+          {facts.map((fact) =>
+            factsStyle === 'cijfers' ? (
+              <div class="fact">
+                <span class="fact-value">{factValue(fact.title)}</span>
+                <span class="fact-label">{fact.text}</span>
+              </div>
+            ) : (
+              <div class="fact">
+                <h2 class="fact-title">{fact.title}</h2>
+                <p>{fact.text}</p>
+              </div>
+            ),
+          )}
+        </section>
+      )
+    }
+
+    <div class="layout">
+      <article class="prose">
+        <Fragment set:html={html.slice(0, cut)} />
+        {block === 'veld' && <KorfbalVeld />}
+        {block === 'teams' && <TeamGroups />}
+        <Fragment set:html={html.slice(cut)} />
+      </article>
+
+      <aside class="promo" aria-label="Gratis proefles">
+        <div class="promo-title">{promo.promoTitle}</div>
+        <p class="promo-text">{promo.promoText}</p>
+        <a href={linkHref(promo.promoCta)} class="pill promo-cta">{promo.promoCta}</a>
+      </aside>
+    </div>
+  </main>
+  <Footer />
+  <StickyCta />
+</Base>
+
+<style>
+  .page {
+    padding-top: 88px;
+    padding-bottom: 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 820px;
+  }
+
+  .crumbs {
+    display: flex;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--faint);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: clamp(40px, 5.5vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--blue);
+  }
+
+  .lead {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .photo {
+    aspect-ratio: 21 / 9;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--placeholder);
+  }
+
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .fact {
+    border-radius: 16px;
+    padding: 22px;
+  }
+
+  /* Feiten als tekst: titel met uitleg */
+  .is-tekst .fact {
+    background: var(--blue-soft);
+  }
+
+  .fact-title {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--blue);
+  }
+
+  .fact p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  /* Feiten als cijfers: groot getal met tekst eronder */
+  .is-cijfers .fact {
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .fact-value {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1;
+  }
+
+  .fact-label {
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--blue-muted);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 720px) 340px;
+    justify-content: space-between;
+    gap: 48px;
+    padding-top: 16px;
+  }
+
+  /* Tekst komt uit markdown, dus :global */
+  .prose {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .prose :global(h2) {
+    margin: 44px 0 12px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(h3) {
+    margin: 28px 0 12px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink);
+  }
+
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 18px;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 8px;
+  }
+
+  .prose :global(strong) {
+    color: var(--ink);
+  }
+
+  .prose :global(blockquote) {
+    margin: 28px 0;
+    padding: 4px 0 4px 22px;
+    border-left: 4px solid var(--orange);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.35;
+    color: var(--blue);
+  }
+
+  .prose :global(blockquote p) {
+    margin: 0;
+  }
+
+  .prose :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0 0 24px;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose :global(th) {
+    background: var(--surface);
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .promo {
+    align-self: start;
+    position: sticky;
+    top: 133px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .promo-title {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--blue);
+  }
+
+  .promo-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .promo-cta {
+    align-self: flex-start;
+    margin-top: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 959px) {
+    :global(body) {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+
+    .page {
+      padding-top: 56px;
+      padding-bottom: 48px;
+      gap: 28px;
+    }
+
+    .lead {
+      font-size: 18px;
+    }
+
+    .photo {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+    }
+
+    .facts {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .fact {
+      padding: 16px;
+    }
+
+    .fact-title {
+      font-size: 17px;
+    }
+
+    .fact p,
+    .fact-label {
+      font-size: 14px;
+    }
+
+    .fact-value {
+      font-size: 32px;
+    }
+
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-top: 0;
+    }
+
+    .prose {
+      font-size: 17px;
+    }
+
+    .prose :global(h2) {
+      margin-top: 36px;
+      font-size: 24px;
+    }
+
+    .promo {
+      position: static;
+    }
+  }
+</style>

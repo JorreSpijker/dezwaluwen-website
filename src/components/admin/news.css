@@ -141,6 +141,53 @@
   color: var(--faint);
 }
 
+/* Pagina: intro onder de titel, zoals op de site */
+.page-editor .lead-input {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 32px;
+  border: 0;
+  resize: none;
+  overflow: hidden;
+  background: none;
+  font: inherit;
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.page-editor .lead-input:focus {
+  outline: none;
+}
+
+.page-editor .lead-input::placeholder {
+  color: var(--faint);
+}
+
+/* Pagina: feiten als repeater in de zijbalk */
+.page-editor .fact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.page-editor .fact-tools {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.page-editor .fact-tools .btn {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  font-size: 13px;
+}
+
 /* Tekst zoals op de site (nieuws/[id]) */
 .news-editor .prose .tiptap {
   min-height: 320px;

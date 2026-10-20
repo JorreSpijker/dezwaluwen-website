@@ -1,0 +1,85 @@
+---
+// Alle teams uit het trainingsschema, per groep: vast blok voor pagina's (block: teams).
+// Competitieteams linken naar hun teampagina.
+import { veld } from '../../data/trainingstijden';
+import { teams } from '../../lib/matches';
+
+const teamGroups = veld.groups.map((group) => ({
+  title: group.title,
+  teams: group.rows.map((row) => {
+    const name = row.team.replace('*', '');
+    const team = teams.find((t) => t.short === name);
+    return { name, href: team && `/teams/${team.slug}/` };
+  }),
+}));
+---
+
+<h3>Onze teams</h3>
+{
+  teamGroups.map((group) => (
+    <div class="team-group">
+      <span class="team-group-title">{group.title}</span>
+      <ul class="chips">
+        {group.teams.map((team) => (
+          <li>{team.href ? <a href={team.href} class="chip chip-link">{team.name}</a> : <span class="chip">{team.name}</span>}</li>
+        ))}
+      </ul>
+    </div>
+  ))
+}
+
+<style>
+  .team-group {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+    padding: 12px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .team-group-title {
+    padding-top: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .chips {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .chip-link {
+    background: var(--blue-soft);
+    color: var(--blue);
+  }
+
+  .chip-link:hover {
+    background: var(--blue-muted);
+    text-decoration: none;
+  }
+
+  @media (max-width: 959px) {
+    .team-group {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+  }
+</style>

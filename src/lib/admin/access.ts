@@ -1,14 +1,17 @@
 // Welke bestanden /cms mag lezen en schrijven, en hoe de inhoud gecontroleerd wordt.
 import { z } from 'astro/zod';
-import { club, newsFrontmatter, organisatie, trainingstijden } from '../../data/schemas';
-import { parseNews } from './news';
+import { club, newsFrontmatter, organisatie, pageFrontmatter, trainingstijden } from '../../data/schemas';
+import { parseNews, splitFrontmatter } from './news';
 
-type Rule = { pattern: RegExp; schema?: z.ZodType };
+// Markdown: frontmatter uit de inhoud halen om te controleren
+type Rule = { pattern: RegExp; schema?: z.ZodType; frontmatter?: (content: string) => unknown };
 
 const rules: Rule[] = [
   { pattern: /^src\/data\/trainingstijden\.json$/, schema: trainingstijden },
-  { pattern: /^src\/content\/news\/[a-z0-9-]+\.md$/, schema: newsFrontmatter },
+  { pattern: /^src\/content\/news\/[a-z0-9-]+\.md$/, schema: newsFrontmatter, frontmatter: (c) => parseNews(c).meta },
   { pattern: /^src\/assets\/news\/[a-z0-9-]+\.webp$/ },
+  { pattern: /^src\/content\/pages\/[a-z0-9-]+\.md$/, schema: pageFrontmatter, frontmatter: (c) => splitFrontmatter(c).data },
+  { pattern: /^src\/assets\/pages\/[a-z0-9-]+\.webp$/ },
   { pattern: /^src\/data\/club\.json$/, schema: club },
   { pattern: /^src\/data\/organisatie\.json$/, schema: organisatie },
 ];
@@ -27,10 +30,11 @@ const toIssues = (error: z.ZodError): Issue[] =>
 
 // Inhoud controleren met het schema. JSON: geldig = nette JSON (2 spaties) om te committen. Markdown: frontmatter checken.
 export function checkContent(path: string, content: string): { content: string } | { issues: Issue[] } {
-  const schema = ruleFor(path)?.schema;
-  if (!schema) return { content };
-  if (path.endsWith('.md')) {
-    const result = schema.safeParse(parseNews(content).meta);
+  const rule = ruleFor(path);
+  if (!rule?.schema) return { content };
+  const { schema } = rule;
+  if (rule.frontmatter) {
+    const result = schema.safeParse(rule.frontmatter(content));
     return result.success ? { content } : { issues: toIssues(result.error) };
   }
   let data: unknown;

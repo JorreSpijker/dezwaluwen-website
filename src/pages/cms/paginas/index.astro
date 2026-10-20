@@ -1,0 +1,110 @@
+---
+import Cms from '../../../layouts/Cms.astro';
+import { listPages } from '../../../lib/admin/pages';
+import { drafts } from '../../../lib/admin/repo';
+
+export const prerender = false;
+
+const items = await listPages();
+const removed = Astro.url.searchParams.has('verwijderd');
+---
+
+<Cms title="Pagina's">
+  <a href="/cms" class="back">← Overzicht</a>
+  <div class="head">
+    <h1>Pagina's</h1>
+    <a href="/cms/paginas/nieuw" class="pill">+ Nieuwe pagina</a>
+  </div>
+  {
+    removed && (
+      <p class="message">
+        {drafts ? 'Pagina verwijderd. Na Publiceren op Status is hij ook van de site af.' : 'Pagina verwijderd. Over ongeveer een minuut is hij ook van de site af.'}
+      </p>
+    )
+  }
+  <ul class="list">
+    {
+      items.map((item) => (
+        <li>
+          <a href={`/cms/paginas/${item.slug}`}>
+            <span class="title">{item.title}</span>
+            <span class="meta">
+              /{item.slug}/{item.section && ` · ${item.section}`}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="hint">Een nieuwe pagina staat niet vanzelf in het menu; vraag de beheerder om hem toe te voegen.</p>
+</Cms>
+
+<style>
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: 8px 0 24px;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .message {
+    margin: 0 0 20px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .list li + li {
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .list a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px;
+    color: var(--ink);
+  }
+
+  .list a:hover {
+    text-decoration: none;
+    background: var(--blue-soft);
+  }
+
+  .title {
+    font-weight: 700;
+  }
+
+  .meta,
+  .hint {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .hint {
+    margin: 12px 0 0;
+  }
+</style>
