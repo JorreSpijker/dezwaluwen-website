@@ -44,4 +44,4 @@ In Nederland speel je korfbal het hele jaar. In de nazomer en het voorjaar spele
 
 ## Waar komt korfbal vandaan?
 
-Korfbal is in 1902 bedacht door Nico Broekhuysen, een onderwijzer uit Amsterdam. Hij wilde een balspel waarin jongens en meisjes samen konden spelen. Inmiddels wordt korfbal in tientallen landen gespeeld, maar Nederland is nog altijd het grootste korfballand.
+Korfbal is in **1902** bedacht door Nico Broekhuysen, een onderwijzer uit Amsterdam. Hij wilde een balspel waarin jongens en meisjes samen konden spelen. Inmiddels wordt korfbal in tientallen landen gespeeld, maar Nederland is nog altijd het grootste korfballand.
