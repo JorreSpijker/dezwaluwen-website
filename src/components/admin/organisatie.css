@@ -1,0 +1,191 @@
+/* Bestuur & commissies: inklapbare kaarten met taken en leden als regels */
+
+.org h2 {
+  margin: 28px 0 12px;
+  font-family: var(--font-head);
+  font-size: 20px;
+  color: var(--blue);
+}
+
+.org h2:first-child {
+  margin-top: 0;
+}
+
+.org h3 {
+  margin: 24px 0 8px;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.org label {
+  display: block;
+}
+
+.org .form-control.is-invalid {
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.org .btn-add {
+  margin-top: 4px;
+}
+
+/* Kaart */
+.org-card {
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.org-card.is-invalid {
+  border-color: var(--red);
+}
+
+.org-card summary {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.org-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.org-card summary::before {
+  content: '▸';
+  color: var(--blue);
+  transition: transform 0.15s;
+}
+
+.org-card[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.org-card[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.org-card-title {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.org-card-short {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.org-card-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.org-card-error {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--red);
+}
+
+.org-card-tools {
+  margin-left: auto;
+}
+
+.org-card-body {
+  padding: 16px;
+}
+
+/* Knoppen omhoog, omlaag, verwijderen */
+.org-tools {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.org-tools .btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  font-size: 13px;
+}
+
+/* Velden van een commissie */
+.org-fields {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.org-fields .span-2 {
+  grid-column: span 2;
+}
+
+.org-fields .span-all {
+  grid-column: 1 / -1;
+}
+
+/* Regels: taken en leden */
+.org-line {
+  display: grid;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.org-line .form-control {
+  padding: 8px 10px;
+}
+
+.org-task {
+  grid-template-columns: 1fr auto;
+}
+
+.org-member {
+  grid-template-columns: 1fr 1.6fr 1fr auto;
+}
+
+.org-member-head {
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.org-member-head::after {
+  content: '';
+  width: 98px;
+}
+
+@media (max-width: 720px) {
+  .org-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .org-member {
+    grid-template-columns: 1fr 1fr;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+
+  .org-member .form-control:nth-child(-n + 2) {
+    grid-column: span 2;
+  }
+
+  .org-member .org-tools {
+    justify-self: end;
+  }
+
+  .org-member-head {
+    display: none;
+  }
+}
