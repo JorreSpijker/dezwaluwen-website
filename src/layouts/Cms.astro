@@ -111,6 +111,17 @@ const isActive = (href: string) => (href === '/cms' ? path === '/cms' : path ===
     background: var(--surface);
   }
 
+  /* Hoogte van de vaste bovenbalk; andere sticky elementen schuiven eronder (0 = balk scrolt mee) */
+  :global(:root) {
+    --cms-bar: 57px;
+  }
+
+  @media (max-width: 960px) {
+    :global(:root) {
+      --cms-bar: 0px;
+    }
+  }
+
   .bar {
     display: flex;
     align-items: center;
@@ -119,6 +130,19 @@ const isActive = (href: string) => (href === '/cms' ? path === '/cms' : path ===
     padding: 12px 24px;
     background: #fff;
     border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 961px) {
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: var(--cms-bar);
+    }
+
+    .brand-inner span {
+      margin-top: -12px;
+    }
   }
 
   .brand {
@@ -136,14 +160,14 @@ const isActive = (href: string) => (href === '/cms' ? path === '/cms' : path ===
     top: 0;
     left: 24px;
     z-index: 9999;
-    background: #fff;
-    padding: 6px 12px 0 0;
+    padding: 12px 12px 0 0;
     display: flex;
     gap: 10px;
     align-items: center;
   }
 
   .brand img {
+    background-color: #fff;
   }
 
   .brand:hover {
@@ -213,7 +237,7 @@ const isActive = (href: string) => (href === '/cms' ? path === '/cms' : path ===
 
   .side {
     position: sticky;
-    top: 0;
+    top: var(--cms-bar);
     display: flex;
     flex-direction: column;
     gap: 2px;

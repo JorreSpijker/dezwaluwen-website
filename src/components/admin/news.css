@@ -10,7 +10,7 @@
 /* Bovenbalk met terug, titel en publiceren */
 .news-editor .topbar {
   position: sticky;
-  top: 0;
+  top: var(--cms-bar, 0px);
   z-index: 10;
   display: flex;
   align-items: center;
@@ -67,7 +67,8 @@
 
 .news-editor .toolbar {
   position: sticky;
-  top: 57px;
+  /* Onder de bovenbalk van het CMS en de topbar van de editor (57px) */
+  top: calc(var(--cms-bar, 0px) + 57px);
   z-index: 5;
   display: flex;
   flex-wrap: wrap;
