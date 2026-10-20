@@ -1,0 +1,110 @@
+---
+import Beheer from '../../../layouts/Beheer.astro';
+import { listNews } from '../../../lib/admin/news';
+
+export const prerender = false;
+
+const items = await listNews();
+const removed = Astro.url.searchParams.has('verwijderd');
+const formatDate = (date: string) =>
+  new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
+---
+
+<Beheer title="Nieuws">
+  <a href="/beheer" class="back">← Overzicht</a>
+  <div class="head">
+    <h1>Nieuws</h1>
+    <a href="/beheer/nieuws/nieuw" class="pill">+ Nieuw bericht</a>
+  </div>
+  {removed && <p class="message">Bericht verwijderd. Over ongeveer een minuut is het ook van de site af.</p>}
+  <ul class="list">
+    {
+      items.map((item) => (
+        <li>
+          <a href={`/beheer/nieuws/${item.slug}`}>
+            <span class="title">{item.title}</span>
+            <span class="meta">
+              {formatDate(item.date)} · {item.category}
+              {item.sticky && <span class="pin">Vastgepind</span>}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Beheer>
+
+<style>
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin: 8px 0 24px;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .message {
+    margin: 0 0 20px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .list li + li {
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .list a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px;
+    color: var(--ink);
+  }
+
+  .list a:hover {
+    text-decoration: none;
+    background: var(--blue-soft);
+  }
+
+  .title {
+    font-weight: 700;
+  }
+
+  .meta {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .pin {
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>

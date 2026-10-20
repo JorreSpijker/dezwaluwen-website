@@ -1,9 +1,9 @@
-// Terug van Google: code inwisselen, e-mailadres checken tegen de gebruikerslijst, sessie starten.
+// Terug van Google: code inwisselen, e-mailadres checken tegen BEHEER_EMAILS, sessie starten.
 import type { APIRoute } from 'astro';
 import { decodeIdToken } from 'arctic';
 import { startSession } from '../../../../lib/admin/auth';
 import { STATE_COOKIE, VERIFIER_COOKIE, google } from '../../../../lib/admin/google';
-import { findUser } from '../../../../lib/admin/users';
+import { hasAccess, type User } from '../../../../lib/admin/users';
 
 export const prerender = false;
 
@@ -16,18 +16,17 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
   cookies.delete(VERIFIER_COOKIE, { path: '/' });
   if (!code || !state || state !== savedState || !verifier) return redirect('/beheer/login?status=mislukt', 303);
 
-  let email: string | undefined;
+  let user: User | undefined;
   try {
     const tokens = await google(url.origin).validateAuthorizationCode(code, verifier);
     // Token komt rechtstreeks van Google (server-naar-server), dus decoderen zonder extra handtekeningcheck volstaat
-    const claims = decodeIdToken(tokens.idToken()) as { email?: string; email_verified?: boolean };
-    if (claims.email_verified) email = claims.email;
+    const claims = decodeIdToken(tokens.idToken()) as { email?: string; email_verified?: boolean; name?: string };
+    if (claims.email && claims.email_verified) user = { email: claims.email.toLowerCase(), name: claims.name ?? claims.email };
   } catch {
     return redirect('/beheer/login?status=mislukt', 303);
   }
 
-  const user = email ? await findUser(email) : undefined;
-  if (!user) return redirect('/beheer/login?status=geen-toegang', 303);
-  await startSession(cookies, user.email);
+  if (!user || !hasAccess(user.email)) return redirect('/beheer/login?status=geen-toegang', 303);
+  await startSession(cookies, user);
   return redirect('/beheer', 303);
 };

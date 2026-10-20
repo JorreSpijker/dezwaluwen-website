@@ -2,6 +2,7 @@
 import type { AstroCookies } from 'astro';
 import { AUTH_SECRET } from 'astro:env/server';
 import { SignJWT, jwtVerify } from 'jose';
+import type { User } from './users';
 
 export const SESSION_COOKIE = 'beheer_sessie';
 export const SESSION_DAYS = 30;
@@ -11,21 +12,23 @@ const key = () => {
   return new TextEncoder().encode(AUTH_SECRET);
 };
 
-const createSession = (email: string) =>
-  new SignJWT().setProtectedHeader({ alg: 'HS256' }).setSubject(email).setIssuedAt().setExpirationTime(`${SESSION_DAYS}d`).sign(key());
+const createSession = ({ name, email }: User) =>
+  new SignJWT({ name }).setProtectedHeader({ alg: 'HS256' }).setSubject(email).setIssuedAt().setExpirationTime(`${SESSION_DAYS}d`).sign(key());
 
-// E-mailadres uit een geldige sessie, anders undefined
-export async function verifySession(token: string | undefined) {
+// Gebruiker uit een geldige sessie, anders undefined
+export async function verifySession(token: string | undefined): Promise<User | undefined> {
   if (!token) return;
   try {
-    return (await jwtVerify(token, key(), { algorithms: ['HS256'] })).payload.sub;
+    const { payload } = await jwtVerify(token, key(), { algorithms: ['HS256'] });
+    if (!payload.sub) return;
+    return { email: payload.sub, name: typeof payload.name === 'string' ? payload.name : payload.sub };
   } catch {
     return;
   }
 }
 
-export async function startSession(cookies: AstroCookies, email: string) {
-  cookies.set(SESSION_COOKIE, await createSession(email), {
+export async function startSession(cookies: AstroCookies, user: User) {
+  cookies.set(SESSION_COOKIE, await createSession(user), {
     path: '/',
     httpOnly: true,
     secure: !import.meta.env.DEV,

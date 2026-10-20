@@ -36,15 +36,23 @@ export async function github(path: string, init: RequestInit = {}) {
 
 const post = (path: string, body: unknown) => github(path, { method: 'POST', body: JSON.stringify(body) });
 
-export async function readFile(path: string): Promise<RepoFile> {
+// Ruwe inhoud + sha van een bestand op de branch
+export async function readBytes(path: string): Promise<{ body: Buffer; sha: string }> {
   if (local) {
     const body = await readLocal(root(path));
-    return { content: body.toString('utf8'), sha: blobSha(body) };
+    return { body, sha: blobSha(body) };
   }
   const file = await github(`/contents/${path}?ref=${encodeURIComponent(GITHUB_BRANCH)}`);
   if (!file) throw new Error(`${path} niet gevonden op ${GITHUB_BRANCH}`);
-  return { content: Buffer.from(file.content, 'base64').toString('utf8'), sha: file.sha };
+  return { body: Buffer.from(file.content, 'base64'), sha: file.sha };
 }
+
+export async function readFile(path: string): Promise<RepoFile> {
+  const { body, sha } = await readBytes(path);
+  return { content: body.toString('utf8'), sha };
+}
+
+export const exists = async (path: string) => (await currentShas([path], GITHUB_BRANCH))[0] !== null;
 
 // Bestanden in een map (niet recursief)
 export async function listDir(path: string): Promise<{ name: string; sha: string }[]> {
@@ -74,7 +82,8 @@ async function assertNoConflict(changes: Change[], ref: string) {
 }
 
 // Alle wijzigingen in één commit, zodat een bericht met foto maar één deploy geeft
-// Geeft de nieuwe sha per pad terug (null = verwijderd), zodat de client daarna opnieuw kan opslaan
+// Geeft de nieuwe sha per pad terug (null = verwijderd), zodat de client daarna opnieuw kan opslaan,
+// en de commit-sha voor de deploystatus (null = lokaal, geen commit)
 export async function commit(changes: Change[], message: string, author: { name: string; email: string }) {
   const shas = Object.fromEntries(
     changes.map((c) => [c.path, c.content === null ? null : blobSha(Buffer.from(c.content, c.encoding === 'base64' ? 'base64' : 'utf8'))]),
@@ -89,7 +98,7 @@ export async function commit(changes: Change[], message: string, author: { name:
       }
     }
     console.log(`[beheer] lokaal opgeslagen (geen commit): ${message}`);
-    return shas;
+    return { shas, commit: null };
   }
 
   const head: string = (await github(`/git/ref/heads/${GITHUB_BRANCH}`)).object.sha;
@@ -116,5 +125,15 @@ export async function commit(changes: Change[], message: string, author: { name:
     if (String(error).includes(': 422 ')) throw new ConflictError('Er is net iets anders opgeslagen. Probeer het opnieuw.');
     throw error;
   }
-  return shas;
+  return { shas, commit: newCommit.sha as string };
+}
+
+// Status van de Vercel-deploy voor een commit; Vercel meldt deploys als GitHub-deployments
+export async function deployState(sha: string): Promise<'pending' | 'ready' | 'error'> {
+  const [deployment] = (await github(`/deployments?sha=${sha}&per_page=1`)) ?? [];
+  if (!deployment) return 'pending';
+  const [status] = (await github(`/deployments/${deployment.id}/statuses?per_page=1`)) ?? [];
+  if (status?.state === 'success') return 'ready';
+  if (status?.state === 'failure' || status?.state === 'error') return 'error';
+  return 'pending';
 }

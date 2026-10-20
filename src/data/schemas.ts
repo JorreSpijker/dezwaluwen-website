@@ -2,11 +2,15 @@
 // de beheer-API (fout = geen commit) en de formulieren in /beheer.
 import { z } from 'astro/zod';
 
+// Foutmeldingen in het Nederlands (build en /beheer)
+z.config(z.locales.nl());
+
 // Leeg optioneel veld uit een formulier ("") telt als niet ingevuld
 const optional = <T extends z.ZodType>(schema: T) => z.preprocess((v) => v || undefined, schema.optional());
 
 // --- Trainingstijden ---
-const day = z.enum(['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag']);
+export const days = ['Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag', 'Zondag'] as const;
+const day = z.enum(days);
 const column = z.strictObject({ day, location: optional(z.string()) });
 const slot = column.extend({ time: z.string().min(1), field: optional(z.string()), note: optional(z.string()) });
 export const schedule = z
@@ -90,14 +94,19 @@ export const organisatie = z
     ),
   });
 
-// --- Gebruikers van /beheer (beheer/gebruikers.json) ---
-export const roles = ['editor', 'admin'] as const;
+// --- Nieuws: frontmatter van src/content/news/*.md ---
+// Gedeeld door content.config.ts (die voegt image() toe) en /beheer
+export const newsFields = {
+  title: z.string().min(1),
+  // Kortere titel voor de mobiele nieuwslijst
+  titleShort: optional(z.string()),
+  date: z.coerce.date(),
+  category: z.string().min(1),
+  imageAlt: z.string().default(''),
+  // Vastgepind: altijd bovenaan, los van de datum
+  sticky: z.boolean().default(false),
+};
 
-export const gebruikers = z
-  .array(z.strictObject({ name: z.string().min(1), email: z.email(), role: z.enum(roles) }))
-  .superRefine((users, ctx) => {
-    const emails = users.map((u) => u.email.toLowerCase());
-    for (const email of new Set(emails.filter((e, i) => emails.indexOf(e) !== i))) {
-      ctx.addIssue({ code: 'custom', message: `${email} staat meer dan eens in de lijst` });
-    }
-  });
+// In /beheer is de foto een pad naar src/assets, gezien vanaf het md-bestand
+export const newsImage = z.string().regex(/^\.\.\/\.\.\/assets\/[a-z0-9_/-]+\.(webp|jpe?g|png)$/, 'foto moet in src/assets staan');
+export const newsFrontmatter = z.strictObject({ ...newsFields, image: newsImage });

@@ -1,30 +1,36 @@
 ---
-import JsonPage from '../../components/admin/JsonPage.astro';
+import ClubEditor from '../../components/admin/ClubEditor';
+import Beheer from '../../layouts/Beheer.astro';
+import { readFile } from '../../lib/admin/repo';
 
 export const prerender = false;
 
-const uiSchema = {
-  clubCode: { 'ui:title': 'Clubcode', 'ui:help': 'Sportlink-clubcode. Alleen wijzigen als je zeker weet wat je doet.' },
-  teams: {
-    'ui:title': 'Teams',
-    items: {
-      'ui:title': 'Team',
-      short: { 'ui:title': 'Afkorting', 'ui:help': 'Bijv. J5. Wordt ook de link /teams/j5/.' },
-      name: { 'ui:title': 'Naam' },
-      category: { 'ui:title': 'Categorie', 'ui:help': 'Bijv. Senioren of Jeugd' },
-      teamCode: { 'ui:title': 'Teamcode', 'ui:help': 'Uit Sportlink, begint met T' },
-      pools: {
-        'ui:title': 'Poules',
-        items: { 'ui:title': 'Poule', name: { 'ui:title': 'Naam' }, code: { 'ui:title': 'Code' } },
-      },
-    },
-  },
-};
+const path = 'src/data/club.json';
+const file = await readFile(path);
 ---
 
-<JsonPage
-  path="src/data/club.json"
-  title="Teams & Sportlink"
-  intro="Teams op de site en hun codes in Sportlink. Programma, uitslagen en standen worden hiermee opgehaald."
-  uiSchema={uiSchema}
-/>
+<Beheer title="Teams & Sportlink">
+  <a href="/beheer" class="back">← Overzicht</a>
+  <h1>Teams & Sportlink</h1>
+  <p class="intro">Teams op de site en hun codes in Sportlink. Programma, uitslagen en standen worden hiermee opgehaald.</p>
+  <ClubEditor client:load path={path} sha={file.sha} data={JSON.parse(file.content)} />
+</Beheer>
+
+<style>
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 8px 0;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .intro {
+    margin: 0 0 28px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+</style>

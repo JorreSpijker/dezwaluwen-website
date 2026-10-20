@@ -3,9 +3,11 @@ import '../styles/global.css';
 
 interface Props {
   title: string;
+  // Volle breedte, bijv. voor de nieuws-editor met zijbalk
+  wide?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, wide = false } = Astro.props;
 const { user } = Astro.locals;
 ---
 
@@ -27,15 +29,13 @@ const { user } = Astro.locals;
       {
         user && (
           <form method="post" action="/api/beheer/logout" class="user">
-            <span>
-              {user.name} · {user.role === 'admin' ? 'Admin' : 'Editor'}
-            </span>
+            <span>{user.name}</span>
             <button type="submit">Uitloggen</button>
           </form>
         )
       }
     </header>
-    <main class="main">
+    <main class:list={['main', { wide }]}>
       <slot />
     </main>
   </body>
@@ -84,8 +84,13 @@ const { user } = Astro.locals;
   }
 
   .main {
-    max-width: 960px;
+    max-width: var(--max);
     margin-inline: auto;
     padding: 40px var(--gutter) 80px;
+  }
+
+  .main.wide {
+    max-width: 1600px;
+    padding-top: 24px;
   }
 </style>

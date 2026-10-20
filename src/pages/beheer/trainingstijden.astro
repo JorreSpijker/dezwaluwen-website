@@ -1,0 +1,37 @@
+---
+import Beheer from '../../layouts/Beheer.astro';
+import TrainingGrid from '../../components/admin/TrainingGrid';
+import { days } from '../../data/schemas';
+import { readFile } from '../../lib/admin/repo';
+
+export const prerender = false;
+
+const path = 'src/data/trainingstijden.json';
+const file = await readFile(path);
+---
+
+<Beheer title="Trainingstijden">
+  <a href="/beheer" class="back">← Overzicht</a>
+  <h1>Trainingstijden</h1>
+  <p class="intro">Tijden per team voor veld en zaal. Elke kolom is een dag, eventueel met locatie.</p>
+  <TrainingGrid client:load path={path} sha={file.sha} data={JSON.parse(file.content)} days={days} />
+</Beheer>
+
+<style>
+  .back {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 8px 0;
+    font-family: var(--font-head);
+    color: var(--blue);
+  }
+
+  .intro {
+    margin: 0 0 28px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+</style>

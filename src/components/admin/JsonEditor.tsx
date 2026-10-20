@@ -30,7 +30,7 @@ export default function JsonEditor({ path, sha: initialSha, data: initialData, s
   async function onSubmit(formData: unknown) {
     setState({ status: 'saving' });
     const result = await save([{ path, content: JSON.stringify(formData), sha }]);
-    if (result.status === 'saved') setSha(result.shas[path]!);
+    if (result.status === 'saved') setSha(result.data.shas[path]!);
     setState(result);
   }
 

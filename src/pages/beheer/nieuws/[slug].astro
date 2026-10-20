@@ -1,0 +1,25 @@
+---
+import NewsEditor from '../../../components/admin/NewsEditor';
+import Beheer from '../../../layouts/Beheer.astro';
+import { NEWS_DIR, imagePath, listNews, parseNews, type NewsMeta } from '../../../lib/admin/news';
+import { exists, readFile } from '../../../lib/admin/repo';
+
+export const prerender = false;
+
+const slug = Astro.params.slug!;
+const isNew = slug === 'nieuw';
+const path = `${NEWS_DIR}/${slug}.md`;
+if (!isNew && (!/^[a-z0-9-]+$/.test(slug) || !(await exists(path)))) return Astro.redirect('/beheer/nieuws');
+
+const file = isNew ? null : await readFile(path);
+const { meta, body }: { meta: NewsMeta; body: string } = file
+  ? parseNews(file.content)
+  : { meta: { title: '', date: new Date().toISOString().slice(0, 10), category: '', image: '', imageAlt: '', sticky: false }, body: '' };
+const categories = [...new Set((await listNews()).map((n) => n.category))].sort();
+const imageUrl = meta.image ? `/api/beheer/image?path=${encodeURIComponent(imagePath(meta.image))}` : null;
+const savedCommit = Astro.url.searchParams.get('opgeslagen') ?? undefined;
+---
+
+<Beheer title={isNew ? 'Nieuw bericht' : meta.title} wide>
+  <NewsEditor client:load slug={isNew ? null : slug} sha={file?.sha ?? null} meta={meta} body={body} imageUrl={imageUrl} categories={categories} savedCommit={savedCommit} />
+</Beheer>

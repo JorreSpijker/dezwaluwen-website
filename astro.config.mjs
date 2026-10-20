@@ -15,7 +15,7 @@ export default defineConfig({
   env: {
     schema: {
       AUTH_SECRET: envField.string(secret),
-      OWNER_EMAILS: envField.string(secret),
+      BEHEER_EMAILS: envField.string(secret),
       GOOGLE_CLIENT_ID: envField.string(secret),
       GOOGLE_CLIENT_SECRET: envField.string(secret),
       GITHUB_TOKEN: envField.string(secret),

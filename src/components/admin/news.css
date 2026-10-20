@@ -1,0 +1,331 @@
+/* Nieuws-editor in de stijl van de WordPress-editor: bovenbalk, pagina in het midden, zijbalk rechts */
+
+.news-editor {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: clip;
+}
+
+/* Bovenbalk met terug, titel en publiceren */
+.news-editor .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-editor .back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+}
+
+.news-editor .back:hover {
+  text-decoration: none;
+  color: #fff;
+  background: var(--blue);
+}
+
+.news-editor .doc-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.news-editor .topbar .btn-info {
+  padding: 10px 20px;
+}
+
+.news-editor .layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  min-height: 70vh;
+}
+
+/* Midden: werkbalk + pagina */
+.news-editor .canvas {
+  background: var(--surface);
+  min-width: 0;
+}
+
+.news-editor .toolbar {
+  position: sticky;
+  top: 57px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-editor .toolbar button {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.news-editor .toolbar button:hover {
+  background: var(--surface);
+}
+
+.news-editor .toolbar .is-active {
+  background: var(--ink);
+  color: #fff;
+}
+
+.news-editor .toolbar .is-active:hover {
+  background: var(--ink);
+}
+
+.news-editor .toolbar .sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 6px;
+  background: var(--line);
+}
+
+.news-editor .page {
+  max-width: 760px;
+  margin: 32px auto;
+  padding: 56px 64px 80px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(10, 34, 64, 0.08);
+}
+
+/* Titel zoals op de site */
+.news-editor .title-input {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 28px;
+  border: 0;
+  resize: none;
+  overflow: hidden;
+  background: none;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(32px, 3.6vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--blue);
+}
+
+.news-editor .title-input:focus {
+  outline: none;
+}
+
+.news-editor .title-input::placeholder {
+  color: var(--faint);
+}
+
+/* Tekst zoals op de site (nieuws/[id]) */
+.news-editor .prose .tiptap {
+  min-height: 320px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.news-editor .prose .tiptap:focus {
+  outline: none;
+}
+
+.news-editor .prose p,
+.news-editor .prose ul,
+.news-editor .prose ol {
+  margin: 0 0 20px;
+}
+
+.news-editor .prose .tiptap > p:first-child {
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.news-editor .prose h2 {
+  margin: 40px 0 12px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.news-editor .prose h3 {
+  margin: 28px 0 8px;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 21px;
+  color: var(--ink);
+}
+
+.news-editor .prose li {
+  margin-bottom: 6px;
+}
+
+.news-editor .prose li p {
+  margin: 0;
+}
+
+.news-editor .prose blockquote {
+  margin: 28px 0;
+  padding: 4px 0 4px 22px;
+  border-left: 4px solid var(--orange);
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.35;
+  color: var(--blue);
+}
+
+.news-editor .prose blockquote p {
+  margin: 0;
+}
+
+.news-editor .prose a {
+  text-decoration: underline;
+}
+
+.news-editor .prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--faint);
+  pointer-events: none;
+}
+
+/* Zijbalk met panelen */
+.news-editor .sidebar {
+  border-left: 1px solid var(--line);
+  background: #fff;
+}
+
+.news-editor .panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.news-editor .panel h2 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.news-editor .panel .control-label {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+.news-editor .panel .form-control {
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.news-editor .panel .help-block {
+  margin: 0;
+}
+
+.news-editor .facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.news-editor .facts dt {
+  color: var(--muted);
+}
+
+.news-editor .facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.news-editor .panel .save-status {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.news-editor .link-danger {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--red);
+  text-decoration: underline;
+}
+
+.news-editor .photo {
+  display: block;
+  cursor: pointer;
+}
+
+.news-editor .photo img,
+.news-editor .photo-empty {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--placeholder);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.news-editor .photo-empty {
+  border: 1px dashed var(--blue-muted);
+}
+
+.news-editor .check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .news-editor .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .news-editor .sidebar {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .news-editor .page {
+    margin: 0;
+    padding: 28px 20px 48px;
+  }
+}
