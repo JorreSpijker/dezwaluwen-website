@@ -6,6 +6,7 @@ import 'react-datasheet-grid/dist/style.css';
 import { club as schema } from '../../data/schemas';
 import { save, type SaveState } from './save';
 import SaveStatus from './SaveStatus';
+import { useUnsavedWarning } from './unsaved';
 import './form.css';
 import './grid.css';
 
@@ -84,6 +85,7 @@ export default function ClubEditor({ path, sha: initialSha, data }: Props) {
   const [state, setState] = useState<SaveState>({ status: 'idle' });
 
   const value: Club = { clubCode: clubCode.trim(), teams: fromFlat(rows, poolCols) };
+  const markSaved = useUnsavedWarning(JSON.stringify(value));
 
   // Fouten per cel ("regel:kolom") en als lijst; regels tellen zonder lege regels
   const result = schema.safeParse(value);
@@ -126,13 +128,17 @@ export default function ClubEditor({ path, sha: initialSha, data }: Props) {
 
   async function onSave() {
     setState({ status: 'saving' });
-    const result = await save([{ path, content: JSON.stringify(value), sha }]);
-    if (result.status === 'saved') setSha(result.data.shas[path]!);
+    const content = JSON.stringify(value);
+    const result = await save([{ path, content, sha }]);
+    if (result.status === 'saved') {
+      setSha(result.data.shas[path]!);
+      markSaved(content);
+    }
     setState(result);
   }
 
   return (
-    <div className="beheer-form training club">
+    <div className="cms-form training club">
       <label className="club-code">
         <span className="control-label">Clubcode</span>
         <input

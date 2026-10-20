@@ -1,4 +1,4 @@
-// Welke bestanden /beheer mag lezen en schrijven, en hoe de inhoud gecontroleerd wordt.
+// Welke bestanden /cms mag lezen en schrijven, en hoe de inhoud gecontroleerd wordt.
 import { z } from 'astro/zod';
 import { club, newsFrontmatter, organisatie, trainingstijden } from '../../data/schemas';
 import { parseNews } from './news';
@@ -44,7 +44,7 @@ export function checkContent(path: string, content: string): { content: string }
   return { content: `${JSON.stringify(result.data, null, 2)}\n` };
 }
 
-// JSON Schema voor de formulieren in /beheer (draft-7, wat de formulier-validator verwacht)
+// JSON Schema voor de formulieren in /cms (draft-7, wat de formulier-validator verwacht)
 export function jsonSchemaFor(path: string) {
   const schema = ruleFor(path)?.schema;
   if (!schema) throw new Error(`Geen schema voor ${path}`);

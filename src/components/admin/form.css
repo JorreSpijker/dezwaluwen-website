@@ -1,13 +1,13 @@
 /* Opmaak voor formulieren van @rjsf/core (Bootstrap-klassen) in de stijl van de site */
 
-.beheer-form fieldset {
+.cms-form fieldset {
   margin: 0;
   padding: 0;
   border: 0;
   min-width: 0;
 }
 
-.beheer-form legend {
+.cms-form legend {
   padding: 0;
   margin-bottom: 12px;
   font-family: var(--font-head);
@@ -16,28 +16,28 @@
   color: var(--blue);
 }
 
-.beheer-form fieldset fieldset legend {
+.cms-form fieldset fieldset legend {
   font-size: 16px;
   color: var(--ink);
 }
 
-.beheer-form .form-group {
+.cms-form .form-group {
   margin-bottom: 16px;
 }
 
-.beheer-form .control-label {
+.cms-form .control-label {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
   font-weight: 600;
 }
 
-.beheer-form .required {
+.cms-form .required {
   color: var(--orange);
   margin-left: 2px;
 }
 
-.beheer-form .form-control {
+.cms-form .form-control {
   width: 100%;
   font: inherit;
   padding: 10px 12px;
@@ -46,27 +46,27 @@
   background: #fff;
 }
 
-.beheer-form textarea.form-control {
+.cms-form textarea.form-control {
   min-height: 110px;
   line-height: 1.5;
   resize: vertical;
 }
 
-.beheer-form .form-control:focus {
+.cms-form .form-control:focus {
   outline: 2px solid var(--blue);
   outline-offset: 0;
   border-color: var(--blue);
 }
 
-.beheer-form .field-description,
-.beheer-form .help-block {
+.cms-form .field-description,
+.cms-form .help-block {
   margin: 4px 0 0;
   font-size: 13px;
   color: var(--muted);
 }
 
 /* Lijsten: elk item als kaart met knoppen rechts */
-.beheer-form .array-item {
+.cms-form .array-item {
   display: flex;
   gap: 12px;
   align-items: flex-start;
@@ -77,26 +77,26 @@
   border-radius: 12px;
 }
 
-.beheer-form .array-item .array-item {
+.cms-form .array-item .array-item {
   background: var(--surface);
 }
 
-.beheer-form .array-item > .col-xs-9,
-.beheer-form .array-item > :first-child {
+.cms-form .array-item > .col-xs-9,
+.cms-form .array-item > :first-child {
   flex: 1;
   min-width: 0;
 }
 
-.beheer-form .array-item-toolbox {
+.cms-form .array-item-toolbox {
   flex: none;
 }
 
-.beheer-form .array-item-toolbox .btn-group {
+.cms-form .array-item-toolbox .btn-group {
   display: flex !important;
   gap: 4px;
 }
 
-.beheer-form .btn {
+.cms-form .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -110,50 +110,50 @@
   font-weight: 600;
 }
 
-.beheer-form .btn:hover:not(:disabled) {
+.cms-form .btn:hover:not(:disabled) {
   border-color: var(--blue);
 }
 
-.beheer-form .btn:disabled {
+.cms-form .btn:disabled {
   opacity: 0.35;
   cursor: default;
 }
 
-.beheer-form .btn-danger {
+.cms-form .btn-danger {
   color: var(--red);
 }
 
-.beheer-form .glyphicon-arrow-up::before {
+.cms-form .glyphicon-arrow-up::before {
   content: '↑';
 }
 
-.beheer-form .glyphicon-arrow-down::before {
+.cms-form .glyphicon-arrow-down::before {
   content: '↓';
 }
 
-.beheer-form .glyphicon-remove::before {
+.cms-form .glyphicon-remove::before {
   content: '✕';
 }
 
-.beheer-form .glyphicon-copy::before {
+.cms-form .glyphicon-copy::before {
   content: '⧉';
 }
 
-.beheer-form .glyphicon-plus::before {
+.cms-form .glyphicon-plus::before {
   content: '+ Toevoegen';
 }
 
-.beheer-form .btn-add {
+.cms-form .btn-add {
   width: auto;
 }
 
-.beheer-form .array-item-add {
+.cms-form .array-item-add {
   text-align: right;
   margin-bottom: 16px;
 }
 
 /* Fouten */
-.beheer-form .errors {
+.cms-form .errors {
   margin-bottom: 20px;
   padding: 14px 16px;
   border-radius: 10px;
@@ -161,36 +161,36 @@
   color: var(--red);
 }
 
-.beheer-form .errors .panel-title {
+.cms-form .errors .panel-title {
   margin: 0 0 6px;
   font-size: 15px;
 }
 
-.beheer-form .errors ul,
-.beheer-form .error-detail {
+.cms-form .errors ul,
+.cms-form .error-detail {
   margin: 0;
   padding-left: 18px;
 }
 
-.beheer-form .error-detail {
+.cms-form .error-detail {
   margin-top: 4px;
   font-size: 13px;
   color: var(--red);
 }
 
-.beheer-form .has-error .form-control {
+.cms-form .has-error .form-control {
   border-color: var(--red);
 }
 
 /* Opslaan: knop blijft onderaan in beeld */
-.beheer-form form > div:last-child {
+.cms-form form > div:last-child {
   position: sticky;
   bottom: 0;
   padding: 16px 0;
   background: linear-gradient(transparent, var(--surface) 30%);
 }
 
-.beheer-form .btn-info {
+.cms-form .btn-info {
   height: auto;
   padding: 12px 24px;
   border: 0;

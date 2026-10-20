@@ -5,13 +5,13 @@ import vercel from '@astrojs/vercel';
 
 const secret = { context: /** @type {const} */ ('server'), access: /** @type {const} */ ('secret'), optional: true };
 
-// Site blijft statisch; alleen /beheer en /api/beheer draaien server-side (prerender = false)
+// Site blijft statisch; alleen /cms en /api/cms draaien server-side (prerender = false)
 export default defineConfig({
   adapter: vercel(),
   // Astro 7 haalt standaard spaties tussen inline-elementen weg ('jsx'); true = gedrag Astro 6
   compressHTML: true,
   integrations: [react()],
-  // Instellingen voor /beheer; zie .env.example
+  // Instellingen voor /cms; zie .env.example
   env: {
     schema: {
       AUTH_SECRET: envField.string(secret),

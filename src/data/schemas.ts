@@ -1,8 +1,8 @@
 // Zod-schema's voor de data in src/data/*.json. Gedeeld door de build (fout = build faalt),
-// de beheer-API (fout = geen commit) en de formulieren in /beheer.
+// de cms-API (fout = geen commit) en de formulieren in /cms.
 import { z } from 'astro/zod';
 
-// Foutmeldingen in het Nederlands (build en /beheer)
+// Foutmeldingen in het Nederlands (build en /cms)
 z.config(z.locales.nl());
 
 // Leeg optioneel veld uit een formulier ("") telt als niet ingevuld
@@ -95,7 +95,7 @@ export const organisatie = z
   });
 
 // --- Nieuws: frontmatter van src/content/news/*.md ---
-// Gedeeld door content.config.ts (die voegt image() toe) en /beheer
+// Gedeeld door content.config.ts (die voegt image() toe) en /cms
 export const newsFields = {
   title: z.string().min(1),
   // Kortere titel voor de mobiele nieuwslijst
@@ -107,6 +107,6 @@ export const newsFields = {
   sticky: z.boolean().default(false),
 };
 
-// In /beheer is de foto een pad naar src/assets, gezien vanaf het md-bestand
+// In /cms is de foto een pad naar src/assets, gezien vanaf het md-bestand
 export const newsImage = z.string().regex(/^\.\.\/\.\.\/assets\/[a-z0-9_/-]+\.(webp|jpe?g|png)$/, 'foto moet in src/assets staan');
 export const newsFrontmatter = z.strictObject({ ...newsFields, image: newsImage });

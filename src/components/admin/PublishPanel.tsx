@@ -13,12 +13,12 @@ export default function PublishPanel({ items, authors, previewUrl }: Props) {
   async function onPublish() {
     if (!confirm(`${items.length} ${items.length === 1 ? 'wijziging' : 'wijzigingen'} live zetten?`)) return;
     setState({ status: 'saving' });
-    setState(await post<{ commit: string | null }>('/api/beheer/publish', {}));
+    setState(await post<{ commit: string | null }>('/api/cms/publish', {}));
   }
 
   if (state.status === 'saved') {
     return (
-      <section className="beheer-form publish">
+      <section className="cms-form publish">
         {state.data.commit ? <DeployStatus commit={state.data.commit} publish /> : <p className="save-status is-ok">Alles is al gepubliceerd.</p>}
       </section>
     );
@@ -26,14 +26,14 @@ export default function PublishPanel({ items, authors, previewUrl }: Props) {
 
   if (!items.length) {
     return (
-      <section className="beheer-form publish is-empty">
+      <section className="cms-form publish is-empty">
         <p>Alles is gepubliceerd.</p>
       </section>
     );
   }
 
   return (
-    <section className="beheer-form publish">
+    <section className="cms-form publish">
       <h2>
         {items.length} {items.length === 1 ? 'wijziging' : 'wijzigingen'} nog niet gepubliceerd
       </h2>

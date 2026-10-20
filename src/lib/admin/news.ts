@@ -1,4 +1,4 @@
-// Nieuwsberichten in /beheer: markdown met frontmatter lezen en schrijven in src/content/news.
+// Nieuwsberichten in /cms: markdown met frontmatter lezen en schrijven in src/content/news.
 import { parse, stringify } from 'yaml';
 import { listDir, readFile } from './repo';
 

@@ -14,7 +14,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
   const verifier = cookies.get(VERIFIER_COOKIE)?.value;
   cookies.delete(STATE_COOKIE, { path: '/' });
   cookies.delete(VERIFIER_COOKIE, { path: '/' });
-  if (!code || !state || state !== savedState || !verifier) return redirect('/beheer/login?status=mislukt', 303);
+  if (!code || !state || state !== savedState || !verifier) return redirect('/cms/login?status=mislukt', 303);
 
   let user: User | undefined;
   try {
@@ -23,10 +23,10 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
     const claims = decodeIdToken(tokens.idToken()) as { email?: string; email_verified?: boolean; name?: string };
     if (claims.email && claims.email_verified) user = { email: claims.email.toLowerCase(), name: claims.name ?? claims.email };
   } catch {
-    return redirect('/beheer/login?status=mislukt', 303);
+    return redirect('/cms/login?status=mislukt', 303);
   }
 
-  if (!user || !hasAccess(user.email)) return redirect('/beheer/login?status=geen-toegang', 303);
+  if (!user || !hasAccess(user.email)) return redirect('/cms/login?status=geen-toegang', 303);
   await startSession(cookies, user);
-  return redirect('/beheer', 303);
+  return redirect('/cms', 303);
 };

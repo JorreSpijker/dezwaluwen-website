@@ -1,6 +1,6 @@
 ---
 import ClubEditor from '../../components/admin/ClubEditor';
-import Beheer from '../../layouts/Beheer.astro';
+import Cms from '../../layouts/Cms.astro';
 import { readFile } from '../../lib/admin/repo';
 
 export const prerender = false;
@@ -9,12 +9,12 @@ const path = 'src/data/club.json';
 const file = await readFile(path);
 ---
 
-<Beheer title="Teams & Sportlink">
-  <a href="/beheer" class="back">← Overzicht</a>
+<Cms title="Teams & Sportlink">
+  <a href="/cms" class="back">← Overzicht</a>
   <h1>Teams & Sportlink</h1>
   <p class="intro">Teams op de site en hun codes in Sportlink. Programma, uitslagen en standen worden hiermee opgehaald.</p>
   <ClubEditor client:load path={path} sha={file.sha} data={JSON.parse(file.content)} />
-</Beheer>
+</Cms>
 
 <style>
   .back {

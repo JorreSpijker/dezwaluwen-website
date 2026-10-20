@@ -34,7 +34,7 @@ export default function DeployStatus({ commit, draft = false, publish = false }:
         return;
       }
       try {
-        const res = await fetch(`/api/beheer/deploy?sha=${commit}`);
+        const res = await fetch(`/api/cms/deploy?sha=${commit}`);
         const next: State = res.ok ? (await res.json()).state : 'unknown';
         if (next !== 'pending') clearInterval(timer);
         setState(next);
@@ -48,7 +48,7 @@ export default function DeployStatus({ commit, draft = false, publish = false }:
   if (draft) {
     return (
       <p className="save-status is-ok" role="status">
-        Opgeslagen als concept. Zet het live met <a href="/beheer">Publiceren in het overzicht</a>.
+        Opgeslagen als concept. Zet het live met <a href="/cms">Publiceren in het overzicht</a>.
       </p>
     );
   }

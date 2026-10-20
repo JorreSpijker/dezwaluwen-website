@@ -186,6 +186,29 @@ const promo = menu[0];
     margin: 0;
   }
 
+  .prose :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0 0 24px;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose :global(th) {
+    background: var(--surface);
+    font-weight: 700;
+    color: var(--ink);
+  }
+
   .promo {
     align-self: start;
     position: sticky;

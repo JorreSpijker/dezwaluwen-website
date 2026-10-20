@@ -13,6 +13,7 @@ import {
 import 'react-datasheet-grid/dist/style.css';
 import { save, type SaveState } from './save';
 import SaveStatus from './SaveStatus';
+import { useUnsavedWarning } from './unsaved';
 import './form.css';
 import './grid.css';
 import { emptyCell, fromFile, toFile, type Column, type FileSchedule, type Row, type Schedule } from './training';
@@ -67,6 +68,7 @@ export default function TrainingGrid({ path, sha: initialSha, data: initialData,
   const [tab, setTab] = useState<keyof Data>('veld');
   const [sha, setSha] = useState(initialSha);
   const [state, setState] = useState<SaveState>({ status: 'idle' });
+  const markSaved = useUnsavedWarning(JSON.stringify(data));
   const s = data[tab];
 
   const update = (fn: (s: Schedule) => Schedule) => {
@@ -103,16 +105,20 @@ export default function TrainingGrid({ path, sha: initialSha, data: initialData,
 
   async function onSave() {
     setState({ status: 'saving' });
+    const snapshot = JSON.stringify(data);
     // Helemaal lege regels (bijv. net toegevoegd) niet meesturen
     const clean = (s: Schedule): Schedule => ({ ...s, groups: s.groups.map((g) => ({ ...g, rows: g.rows.filter((r) => !isEmpty(r)) })) });
     const content = JSON.stringify({ veld: toFile(clean(data.veld)), zaal: toFile(clean(data.zaal)) });
     const result = await save([{ path, content, sha }]);
-    if (result.status === 'saved') setSha(result.data.shas[path]!);
+    if (result.status === 'saved') {
+      setSha(result.data.shas[path]!);
+      markSaved(snapshot);
+    }
     setState(result);
   }
 
   return (
-    <div className="beheer-form training">
+    <div className="cms-form training">
       <div className="tabs" role="tablist">
         {(['veld', 'zaal'] as const).map((key) => (
           <button key={key} type="button" role="tab" aria-selected={tab === key} className={tab === key ? 'is-active' : ''} onClick={() => setTab(key)}>

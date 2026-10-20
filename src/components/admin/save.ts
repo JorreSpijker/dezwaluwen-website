@@ -1,4 +1,4 @@
-// Opslaan via de beheer-API; vertaalt het antwoord naar een status voor de editors.
+// Opslaan via de cms-API; vertaalt het antwoord naar een status voor de editors.
 export type Change = { path: string; content: string | null; encoding?: 'utf-8' | 'base64'; sha: string | null };
 
 export type SaveState<T = unknown> =
@@ -22,4 +22,4 @@ export async function post<T>(url: string, body: unknown): Promise<SaveState<T>>
   }
 }
 
-export const save = (changes: Change[]) => post<{ shas: Record<string, string | null>; commit: string | null }>('/api/beheer/commit', { changes });
+export const save = (changes: Change[]) => post<{ shas: Record<string, string | null>; commit: string | null }>('/api/cms/commit', { changes });

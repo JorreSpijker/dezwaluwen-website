@@ -1,4 +1,4 @@
-// Wie /beheer mag gebruiken: de Google-adressen in BEHEER_EMAILS (Vercel-variabele, lokaal .env). Iedereen op de lijst mag alles.
+// Wie /cms mag gebruiken: de Google-adressen in BEHEER_EMAILS (Vercel-variabele, lokaal .env). Iedereen op de lijst mag alles.
 import { BEHEER_EMAILS } from 'astro:env/server';
 
 export type User = { name: string; email: string };

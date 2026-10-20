@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react';
 import { organisatie as schema } from '../../data/schemas';
 import { save, type SaveState } from './save';
 import SaveStatus from './SaveStatus';
+import { useUnsavedWarning } from './unsaved';
 import './form.css';
 import './organisatie.css';
 
@@ -42,6 +43,7 @@ export default function OrganisatieEditor({ path, sha: initialSha, data }: Props
   const [state, setState] = useState<SaveState>({ status: 'idle' });
 
   const value: Organisatie = { bestuur, commissies: rows.map(({ key, ...c }) => c) };
+  const markSaved = useUnsavedWarning(JSON.stringify(value));
 
   const result = schema.safeParse(value);
   const issues = result.success ? [] : result.error.issues.map((i) => ({ path: i.path.map(String), message: i.message }));
@@ -86,13 +88,17 @@ export default function OrganisatieEditor({ path, sha: initialSha, data }: Props
 
   async function onSave() {
     setState({ status: 'saving' });
-    const result = await save([{ path, content: JSON.stringify(value), sha }]);
-    if (result.status === 'saved') setSha(result.data.shas[path]!);
+    const content = JSON.stringify(value);
+    const result = await save([{ path, content, sha }]);
+    if (result.status === 'saved') {
+      setSha(result.data.shas[path]!);
+      markSaved(content);
+    }
     setState(result);
   }
 
   return (
-    <div className="beheer-form org">
+    <div className="cms-form org">
       <h2>Bestuur</h2>
       <Card
         title={bestuur.name}

@@ -1,4 +1,4 @@
-# Plan: eigen beheeromgeving (`/beheer`)
+# Plan: eigen CMS (`/cms`)
 
 Branch: `feature/admin`
 
@@ -8,13 +8,13 @@ Vrijwilligers loggen in met hun Google-account (geen wachtwoord, geen GitHub-acc
 ## Uitgangspunten
 | Onderwerp | Keuze |
 |---|---|
-| Hosting | Vercel; site blijft statisch, alleen `/beheer` + `/api/beheer/*` server-side |
+| Hosting | Vercel; site blijft statisch, alleen `/cms` + `/api/cms/*` server-side |
 | Login | Google (OAuth + PKCE via `arctic`), alleen accounts die wij toevoegen, geen database |
 | Toegang | `BEHEER_EMAILS` in Vercel, geen rollen |
 | GitHub | fine-grained token |
 | Opslag | git (GitHub API), geen database |
 | Validatie | dezelfde zod-schema's voor build, API en formulieren |
-| UI | React-islands alleen in `/beheer` |
+| UI | React-islands alleen in `/cms` |
 | Workflow | direct live, geen review |
 
 Afgevallen: Decap/Sveltia (login vereist GitHub of DecapBridge, configuratie te beperkt), Keystatic/Tina (schema's dubbel, gratis tier te klein), database-CMS (verlies git-geschiedenis).
@@ -26,12 +26,12 @@ Afgevallen: Decap/Sveltia (login vereist GitHub of DecapBridge, configuratie te 
 
 ## Architectuur
 ```
-browser /beheer (React)
-  │  login: /api/beheer/google ─► Google ─► /api/beheer/google/callback
+browser /cms (React)
+  │  login: /api/cms/google ─► Google ─► /api/cms/google/callback
   │         ─► e-mail in BEHEER_EMAILS? ─► sessiecookie (JWT, httpOnly)
   │
-  │  laden:   GET  /api/beheer/file?path=…        ─► GitHub: inhoud + sha
-  │  opslaan: POST /api/beheer/commit {files, baseSha}
+  │  laden:   GET  /api/cms/file?path=…        ─► GitHub: inhoud + sha
+  │  opslaan: POST /api/cms/commit {files, baseSha}
   │             ─► zod-validatie ─► conflictcheck ─► 1 commit (Git Data API)
   ▼
 GitHub main ─► Vercel build (zod-validatie nogmaals) ─► live
@@ -45,9 +45,9 @@ src/
   lib/admin/google.ts        Google OAuth-client (arctic)
   lib/admin/users.ts         toegang via BEHEER_EMAILS
   lib/admin/repo.ts          lezen + commit van meerdere bestanden (GitHub API via fetch; lokaal zonder token: werkmap)
-  middleware.ts              /beheer en /api/beheer afschermen
-  pages/beheer/              login, overzicht, editors (prerender = false)
-  pages/api/beheer/          login, verify, logout, file, commit, news
+  middleware.ts              /cms en /api/cms afschermen
+  pages/cms/              login, overzicht, editors (prerender = false)
+  pages/api/cms/          login, verify, logout, file, commit, news
   components/admin/          React: JsonForm, TrainingGrid, NewsEditor, ImageUpload
 ```
 
@@ -58,15 +58,15 @@ Validatiewerk (schema's, platte `trainingstijden.json`) als eerste commit op dez
 → verify: `npm run build` slaagt, `dist` identiek aan `main`.
 
 ### 1. ✅ Server-side routes
-Astro 7 (met `compressHTML: true` voor witruimte zoals Astro 6), `@astrojs/vercel` adapter, `@astrojs/react`. Standaard blijft alles prerendered; alleen beheerroutes `export const prerender = false`.
-→ verify: build toont publieke pagina's als statisch; `/beheer` server-rendered; Vercel preview-deploy werkt.
+Astro 7 (met `compressHTML: true` voor witruimte zoals Astro 6), `@astrojs/vercel` adapter, `@astrojs/react`. Standaard blijft alles prerendered; alleen cms-routes `export const prerender = false`.
+→ verify: build toont publieke pagina's als statisch; `/cms` server-rendered; Vercel preview-deploy werkt.
 
 ### 2. ✅ Schema's centraliseren
 Schema's uit `trainingstijden.ts`, `club.ts`, `organisatie.ts` verhuizen naar `src/data/schemas.ts`; bestaande modules importeren ze.
 → verify: build-output identiek; `z.toJSONSchema()` levert bruikbaar JSON Schema voor `club` en `organisatie`.
 
 ### 3. ✅ Login
-- `/beheer/login`: knop "Inloggen met Google" → `/api/beheer/google` (state + PKCE in cookies van 10 min) → Google → `/api/beheer/google/callback`.
+- `/cms/login`: knop "Inloggen met Google" → `/api/cms/google` (state + PKCE in cookies van 10 min) → Google → `/api/cms/google/callback`.
 - Callback: state check, code inwisselen, alleen geverifieerd e-mailadres; toegang als adres in `BEHEER_EMAILS` staat.
 - Sessie: JWT 30 dagen, getekend met `AUTH_SECRET`, cookie `httpOnly`, `secure`, `SameSite=Lax`.
 - `middleware.ts`: zonder geldige sessie → redirect naar login (pagina's) of 401 (API).
@@ -98,11 +98,11 @@ Eigen grid zoals tabel op site: tabblad veld/zaal, teams als rijen, kolommen (da
 → verify: nieuw bericht met foto = 1 commit, build slaagt, bericht staat op `/nieuws/`.
 
 ### 8. ✅ Deploystatus
-Na opslaan volgt de editor de Vercel-deploy van de commit via GitHub-deployments (`/api/beheer/deploy`, elke 10 s, max 10 min): "bezig" → "live" of "mislukt". Geen Vercel-token nodig; GitHub-token heeft Deployments read nodig.
+Na opslaan volgt de editor de Vercel-deploy van de commit via GitHub-deployments (`/api/cms/deploy`, elke 10 s, max 10 min): "bezig" → "live" of "mislukt". Geen Vercel-token nodig; GitHub-token heeft Deployments read nodig.
 → verify: status wisselt binnen paar minuten naar live.
 
 ### 9. Afronding
-✅ Handleiding editors (`docs/beheer-handleiding.md`). Nog te doen door beheerder: env-vars in Vercel, eerste adressen in `BEHEER_EMAILS`.
+✅ Handleiding editors (`docs/cms-handleiding.md`). Nog te doen door beheerder: env-vars in Vercel, eerste adressen in `BEHEER_EMAILS`.
 → verify: end-to-end op productie door editor zonder technische kennis.
 
 ## Fase 2: concept en publiceren met één knop
@@ -114,7 +114,7 @@ Wijzigingen verzamelen zonder dat ze live gaan, bekijken op een preview, en met 
 ```
 opslaan (alle editors) ─► commit op branch `concept`        (niet live)
                              └─► Vercel bouwt preview van `concept`
-/beheer: "N wijzigingen niet gepubliceerd" + lijst + preview-link
+/cms: "N wijzigingen niet gepubliceerd" + lijst + preview-link
 Publiceren ─► GitHub merge `concept` → `main` ─► Vercel deployt productie ─► deploystatus
          └─► daarna `main` → `concept` (concept blijft gelijk met code-wijzigingen op main)
 ```
@@ -131,11 +131,11 @@ Publiceren ─► GitHub merge `concept` → `main` ─► Vercel deployt produc
 - `repo.ts`: `pending()` via `GET /compare/{main}...{concept}` → aantal commits, gewijzigde bestanden (pad + status), auteurs.
 - Bestandspaden vertalen naar leesbare namen: "Nieuws: <titel/slug>", "Trainingstijden", "Teams & Sportlink", "Bestuur & commissies", foto's samenvoegen met hun bericht.
 - Preview-url: laatste GitHub-deployment voor de head van `concept` → `environment_url` (hergebruik patroon uit `deployState()`).
-- In `src/pages/beheer/index.astro`: paneel bovenaan met lijst, "Bekijk preview" en knop **Publiceren**; leeg = "Alles is gepubliceerd".
+- In `src/pages/cms/index.astro`: paneel bovenaan met lijst, "Bekijk preview" en knop **Publiceren**; leeg = "Alles is gepubliceerd".
 → verify: na twee opslagen toont paneel 2 wijzigingen met namen en werkende preview-link.
 
 **✅ 12. Publiceren**
-- `POST /api/beheer/publish`: `POST /merges {base: main, head: concept}` met bericht `content: gepubliceerd door <naam>`.
+- `POST /api/cms/publish`: `POST /merges {base: main, head: concept}` met bericht `content: gepubliceerd door <naam>`.
   - 201 → merge-commit-sha terug; 204 → niets te publiceren; 409 → conflict-melding ("neem contact op met beheerder").
 - Na succes: `POST /merges {base: concept, head: main}` zodat `concept` code-wijzigingen van `main` meekrijgt.
 - UI: knop met bevestiging ("N wijzigingen live zetten?"), daarna bestaande `DeployStatus` (`src/components/admin/DeployStatus.tsx`) op de merge-commit.
@@ -143,7 +143,7 @@ Publiceren ─► GitHub merge `concept` → `main` ─► Vercel deployt produc
 → verify: publiceren → productie toont wijzigingen, paneel weer leeg, deploystatus "live".
 
 **✅ 13. Handleiding bijwerken**
-`docs/beheer-handleiding.md`: concept, preview bekijken, publiceren.
+`docs/cms-handleiding.md`: concept, preview bekijken, publiceren.
 
 ### Vercel-instellingen
 - Production branch blijft `main`; previews voor `concept` aan (standaard).

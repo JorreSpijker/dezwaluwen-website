@@ -1,4 +1,4 @@
-// Omzetten tussen trainingstijden.json (slots met eigen dag/locatie) en de tabel in /beheer (één cel per kolom).
+// Omzetten tussen trainingstijden.json (slots met eigen dag/locatie) en de tabel in /cms (één cel per kolom).
 export type Slot = { day: string; location?: string; time: string; field?: string; note?: string };
 export type Column = { day: string; location?: string };
 export type FileSchedule = { title: string; start: string; columns: Column[]; groups: { title: string; rows: { team: string; slots: Slot[] }[] }[]; note: string };

@@ -1,5 +1,5 @@
 ---
-import Beheer from '../../layouts/Beheer.astro';
+import Cms from '../../layouts/Cms.astro';
 import TrainingGrid from '../../components/admin/TrainingGrid';
 import { days } from '../../data/schemas';
 import { readFile } from '../../lib/admin/repo';
@@ -10,12 +10,12 @@ const path = 'src/data/trainingstijden.json';
 const file = await readFile(path);
 ---
 
-<Beheer title="Trainingstijden">
-  <a href="/beheer" class="back">← Overzicht</a>
+<Cms title="Trainingstijden">
+  <a href="/cms" class="back">← Overzicht</a>
   <h1>Trainingstijden</h1>
   <p class="intro">Tijden per team voor veld en zaal. Elke kolom is een dag, eventueel met locatie.</p>
   <TrainingGrid client:load path={path} sha={file.sha} data={JSON.parse(file.content)} days={days} />
-</Beheer>
+</Cms>
 
 <style>
   .back {

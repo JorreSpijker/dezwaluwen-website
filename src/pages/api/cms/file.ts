@@ -1,4 +1,4 @@
-// Eén bestand lezen (inhoud + sha), alleen bestanden die /beheer mag bewerken.
+// Eén bestand lezen (inhoud + sha), alleen bestanden die /cms mag bewerken.
 import type { APIRoute } from 'astro';
 import { canAccess } from '../../../lib/admin/access';
 import { readFile } from '../../../lib/admin/repo';

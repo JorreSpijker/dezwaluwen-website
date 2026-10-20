@@ -1,5 +1,5 @@
 ---
-import Beheer from '../../../layouts/Beheer.astro';
+import Cms from '../../../layouts/Cms.astro';
 import { listNews } from '../../../lib/admin/news';
 import { drafts } from '../../../lib/admin/repo';
 
@@ -11,11 +11,11 @@ const formatDate = (date: string) =>
   new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(date));
 ---
 
-<Beheer title="Nieuws">
-  <a href="/beheer" class="back">← Overzicht</a>
+<Cms title="Nieuws">
+  <a href="/cms" class="back">← Overzicht</a>
   <div class="head">
     <h1>Nieuws</h1>
-    <a href="/beheer/nieuws/nieuw" class="pill">+ Nieuw bericht</a>
+    <a href="/cms/nieuws/nieuw" class="pill">+ Nieuw bericht</a>
   </div>
   {
     removed && (
@@ -28,7 +28,7 @@ const formatDate = (date: string) =>
     {
       items.map((item) => (
         <li>
-          <a href={`/beheer/nieuws/${item.slug}`}>
+          <a href={`/cms/nieuws/${item.slug}`}>
             <span class="title">{item.title}</span>
             <span class="meta">
               {formatDate(item.date)} · {item.category}
@@ -39,7 +39,7 @@ const formatDate = (date: string) =>
       ))
     }
   </ul>
-</Beheer>
+</Cms>
 
 <style>
   .back {

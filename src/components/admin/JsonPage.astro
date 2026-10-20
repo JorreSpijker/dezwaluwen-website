@@ -1,7 +1,7 @@
 ---
-// Beheerpagina voor één JSON-bestand: bestand laden, formulier tonen.
+// CMS-pagina voor één JSON-bestand: bestand laden, formulier tonen.
 import type { UiSchema } from '@rjsf/utils';
-import Beheer from '../../layouts/Beheer.astro';
+import Cms from '../../layouts/Cms.astro';
 import { jsonSchemaFor } from '../../lib/admin/access';
 import { readFile } from '../../lib/admin/repo';
 import JsonEditor from './JsonEditor';
@@ -17,12 +17,12 @@ const { path, title, intro, uiSchema } = Astro.props;
 const file = await readFile(path);
 ---
 
-<Beheer title={title}>
-  <a href="/beheer" class="back">← Overzicht</a>
+<Cms title={title}>
+  <a href="/cms" class="back">← Overzicht</a>
   <h1>{title}</h1>
   <p class="intro">{intro}</p>
   <JsonEditor client:load path={path} sha={file.sha} data={JSON.parse(file.content)} schema={jsonSchemaFor(path) as object} uiSchema={uiSchema} />
-</Beheer>
+</Cms>
 
 <style>
   .back {

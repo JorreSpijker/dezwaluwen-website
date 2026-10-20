@@ -1,10 +1,10 @@
-# Handleiding beheer website KV de Zwaluwen
+# Handleiding CMS website KV de Zwaluwen
 
-Met het beheer pas je zelf nieuws, trainingstijden, bestuur & commissies en teams aan. Wat je opslaat is eerst een **concept**: het staat nog niet op de site. Met **Publiceren** in het overzicht zet je alle wijzigingen in één keer live.
+Met het CMS pas je zelf nieuws, trainingstijden, bestuur & commissies en teams aan. Wat je opslaat is eerst een **concept**: het staat nog niet op de site. Met **Publiceren** in het overzicht zet je alle wijzigingen in één keer live.
 
 ## Inloggen
 
-1. Ga naar **dezwaluwen.nl/beheer** (of de link die je van de beheerder kreeg).
+1. Ga naar **dezwaluwen.nl/cms** (of de link die je van de beheerder kreeg).
 2. Klik op **Inloggen met Google** en kies je Google-account.
 3. Zie je "Dit Google-account heeft geen toegang"? Dan staat dit account niet op de lijst. Kies een ander account, of vraag de beheerder je adres toe te voegen.
 
@@ -36,7 +36,7 @@ Je blijft 30 dagen ingelogd. Uitloggen kan rechtsboven.
 
 ## Publiceren
 
-- Op het **overzicht** (dezwaluwen.nl/beheer) staat bovenaan welke wijzigingen nog niet gepubliceerd zijn, en door wie.
+- Op het **overzicht** (dezwaluwen.nl/cms) staat bovenaan welke wijzigingen nog niet gepubliceerd zijn, en door wie.
 - **Bekijk preview** opent de site zoals hij wordt na publiceren. Na opslaan duurt het een paar minuten voor de preview klaar is.
 - Klik **Publiceren** om alles live te zetten. Na ongeveer een minuut staat het op de site.
 - Publiceren zet de wijzigingen van **iedereen** live, niet alleen die van jou.

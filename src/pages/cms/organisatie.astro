@@ -1,6 +1,6 @@
 ---
 import OrganisatieEditor from '../../components/admin/OrganisatieEditor';
-import Beheer from '../../layouts/Beheer.astro';
+import Cms from '../../layouts/Cms.astro';
 import { readFile } from '../../lib/admin/repo';
 
 export const prerender = false;
@@ -9,12 +9,12 @@ const path = 'src/data/organisatie.json';
 const file = await readFile(path);
 ---
 
-<Beheer title="Bestuur & commissies">
-  <a href="/beheer" class="back">← Overzicht</a>
+<Cms title="Bestuur & commissies">
+  <a href="/cms" class="back">← Overzicht</a>
   <h1>Bestuur & commissies</h1>
   <p class="intro">Wie zitten er in het bestuur en de commissies, wat doen ze en hoe bereik je ze.</p>
   <OrganisatieEditor client:load path={path} sha={file.sha} data={JSON.parse(file.content)} />
-</Beheer>
+</Cms>
 
 <style>
   .back {

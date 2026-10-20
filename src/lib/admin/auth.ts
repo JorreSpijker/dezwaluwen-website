@@ -4,7 +4,7 @@ import { AUTH_SECRET } from 'astro:env/server';
 import { SignJWT, jwtVerify } from 'jose';
 import type { User } from './users';
 
-export const SESSION_COOKIE = 'beheer_sessie';
+export const SESSION_COOKIE = 'cms_sessie';
 export const SESSION_DAYS = 30;
 
 const key = () => {

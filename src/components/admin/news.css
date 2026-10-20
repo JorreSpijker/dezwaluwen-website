@@ -209,6 +209,77 @@
   text-decoration: underline;
 }
 
+/* Tabel zoals op de site; geselecteerde cellen lichtblauw */
+.news-editor .prose table {
+  width: 100%;
+  margin: 0 0 24px;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.news-editor .prose th,
+.news-editor .prose td {
+  position: relative;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.news-editor .prose th {
+  background: var(--surface);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.news-editor .prose th p,
+.news-editor .prose td p {
+  margin: 0;
+}
+
+.news-editor .prose .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 93, 170, 0.1);
+  pointer-events: none;
+}
+
+/* Zwevende menu's: bij selectie en in een tabel */
+.news-editor .toolbar.bubble {
+  position: static;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(10, 34, 64, 0.14);
+}
+
+/* "/"-menu staat los in de body, buiten .news-editor */
+.slash-menu {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(10, 34, 64, 0.14);
+}
+
+.slash-menu button {
+  padding: 8px 10px;
+  border-radius: 6px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.slash-menu .is-active {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
 .news-editor .prose p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;

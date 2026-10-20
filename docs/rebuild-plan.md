@@ -31,7 +31,7 @@ De cron roept een kleine route in onze eigen app aan; die triggert de Deploy Hoo
 - `src/pages/api/cron/rebuild.ts` (`prerender = false`), `GET`:
   - `Authorization` moet `Bearer ${CRON_SECRET}` zijn, anders 401.
   - `POST` naar `DEPLOY_HOOK_URL`; antwoord van Vercel (job-id) teruggeven, fout → 502 (zichtbaar in Vercel-logs).
-- Valt buiten `/api/beheer`, dus de login-middleware (`src/middleware.ts`) laat hem met rust.
+- Valt buiten `/api/cms`, dus de login-middleware (`src/middleware.ts`) laat hem met rust.
 → verify: lokaal `curl -H "Authorization: Bearer <secret>" localhost:4321/api/cron/rebuild` geeft job-id (met test-hook); zonder header 401.
 
 **2. Config**
@@ -47,7 +47,7 @@ De cron roept een kleine route in onze eigen app aan; die triggert de Deploy Hoo
 → verify: in Cron Jobs op **Run** klikken → nieuwe deployment "Deploy Hook" in de lijst, site bijgewerkt.
 
 **4. Documentatie**
-Korte sectie in `docs/beheer-handleiding.md` (voor de beheerder): wanneer de site vanzelf ververst, hoe je cron uitzet of het schema wijzigt.
+Korte sectie in `docs/cms-handleiding.md` (voor de beheerder): wanneer de site vanzelf ververst, hoe je cron uitzet of het schema wijzigt.
 
 ## Aandachtspunten
 - Bij storing van korfbal.nl gaat de build door zonder wedstrijden (bestaande afhandeling in `matches.ts`); volgende cron herstelt het.

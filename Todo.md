@@ -11,4 +11,4 @@ Programma, uitslagen en standen actueel houden door de site op vaste momenten op
 - [ ] `vercel.json` met crons (UTC): `0 3 * * *`, `0 13 * * 6`, `0 19 * * 6`, `0 21 * * 3`
 - [ ] Vercel: Deploy Hook op `main` aanmaken, `DEPLOY_HOOK_URL` en `CRON_SECRET` zetten, deployen
 - [ ] Testen via Settings → Cron Jobs → Run
-- [ ] Sectie in `docs/beheer-handleiding.md`
+- [ ] Sectie in `docs/cms-handleiding.md`

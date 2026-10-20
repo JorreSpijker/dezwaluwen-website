@@ -1,4 +1,4 @@
-// Formulier voor een JSON-bestand, gegenereerd uit het zod-schema (als JSON Schema). Opslaan = commit via /api/beheer/commit.
+// Formulier voor een JSON-bestand, gegenereerd uit het zod-schema (als JSON Schema). Opslaan = commit via /api/cms/commit.
 import Form from '@rjsf/core';
 import { TranslatableString, englishStringTranslator, type RJSFSchema, type UiSchema } from '@rjsf/utils';
 import { customizeValidator } from '@rjsf/validator-ajv8';
@@ -35,7 +35,7 @@ export default function JsonEditor({ path, sha: initialSha, data: initialData, s
   }
 
   return (
-    <div className="beheer-form">
+    <div className="cms-form">
       <Form
         schema={schema}
         uiSchema={{ 'ui:submitButtonOptions': { submitText: 'Opslaan' }, ...uiSchema }}

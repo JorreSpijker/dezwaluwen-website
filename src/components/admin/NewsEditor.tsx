@@ -1,13 +1,17 @@
 // Nieuwsbericht bewerken zoals een pagina in WordPress: titel en tekst op een "pagina" in de opmaak van de site,
 // gegevens (publiceren, foto, datum, categorie) in de zijbalk. Tekst wordt als markdown opgeslagen. Opslaan = één commit.
+import { TableKit } from '@tiptap/extension-table';
 import { Placeholder } from '@tiptap/extensions';
 import { Markdown } from '@tiptap/markdown';
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import DeployStatus from './DeployStatus';
 import { post, type SaveState } from './save';
 import SaveStatus from './SaveStatus';
+import { SlashMenu } from './SlashMenu';
+import { useUnsavedWarning } from './unsaved';
 import './form.css';
 import './news.css';
 
@@ -44,6 +48,8 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
   const [sha, setSha] = useState(initialSha);
   const [image, setImage] = useState<{ base64: string; url: string } | null>(null);
   const [bodyChanged, setBodyChanged] = useState(false);
+  // Telt wijzigingen in de tekst, voor de waarschuwing bij verlaten
+  const [bodyRev, setBodyRev] = useState(0);
   const [state, setState] = useState<SaveState>({ status: 'idle' });
   const titleRef = useRef<HTMLTextAreaElement>(null);
 
@@ -59,7 +65,10 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
     extensions: [
       // Onderstrepen bestaat niet in markdown
       StarterKit.configure({ heading: { levels: [2, 3] }, link: { openOnClick: false }, underline: false }),
-      Placeholder.configure({ placeholder: 'Begin met schrijven…' }),
+      // Markdown-tabel: eerste rij is altijd de kop, geen breedtes
+      TableKit.configure({ table: { resizable: false } }),
+      SlashMenu,
+      Placeholder.configure({ placeholder: 'Begin met schrijven, of typ / voor een kop, lijst of tabel…' }),
       Markdown,
     ],
     content: body,
@@ -67,6 +76,7 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
     immediatelyRender: false,
     onUpdate: () => {
       setBodyChanged(true);
+      setBodyRev((r) => r + 1);
       setState({ status: 'idle' });
     },
   });
@@ -81,8 +91,12 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
       ordered: editor?.isActive('orderedList'),
       quote: editor?.isActive('blockquote'),
       link: editor?.isActive('link'),
+      table: editor?.isActive('table'),
     }),
   });
+
+  const snapshot = JSON.stringify([meta, image?.url ?? null, bodyRev]);
+  const markSaved = useUnsavedWarning(snapshot);
 
   const set = <K extends keyof Meta>(key: K, value: Meta[K]) => {
     setMeta((m) => ({ ...m, [key]: value }));
@@ -110,9 +124,10 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
   async function onSave() {
     if (!editor) return;
     setState({ status: 'saving' });
+    const saving = snapshot;
     // Tekst niet aangeraakt: origineel meesturen, zodat opmaak van de markdown gelijk blijft
     const markdown = bodyChanged ? editor.getMarkdown() : body;
-    const result = await post<{ slug: string; sha: string; commit: string | null; draft: boolean }>('/api/beheer/news', {
+    const result = await post<{ slug: string; sha: string; commit: string | null; draft: boolean }>('/api/cms/news', {
       action: 'save',
       slug,
       sha,
@@ -121,9 +136,10 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
       image: image?.base64,
     });
     if (result.status === 'saved') {
+      markSaved(saving);
       // Nieuw bericht of nieuwe foto: herladen, zodat pad en versie kloppen
       if (!slug || image) {
-        location.href = `/beheer/nieuws/${result.data.slug}?opgeslagen=${result.data.draft ? 'concept' : (result.data.commit ?? '')}`;
+        location.href = `/cms/nieuws/${result.data.slug}?opgeslagen=${result.data.draft ? 'concept' : (result.data.commit ?? '')}`;
         return;
       }
       setSha(result.data.sha);
@@ -134,8 +150,11 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
   async function onDelete() {
     if (!slug || !confirm(`"${meta.title}" verwijderen? Dit kan niet ongedaan worden gemaakt.`)) return;
     setState({ status: 'saving' });
-    const result = await post('/api/beheer/news', { action: 'delete', slug, sha });
-    if (result.status === 'saved') location.href = '/beheer/nieuws?verwijderd=1';
+    const result = await post('/api/cms/news', { action: 'delete', slug, sha });
+    if (result.status === 'saved') {
+      markSaved(snapshot);
+      location.href = '/cms/nieuws?verwijderd=1';
+    }
     else setState(result);
   }
 
@@ -147,9 +166,9 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
   );
 
   return (
-    <div className="beheer-form news-editor">
+    <div className="cms-form news-editor">
       <header className="topbar">
-        <a href="/beheer/nieuws" className="back" title="Terug naar nieuws">
+        <a href="/cms/nieuws" className="back" title="Terug naar nieuws">
           ←
         </a>
         <span className="doc-title">{meta.title || (slug ? 'Bericht bewerken' : 'Nieuw bericht')}</span>
@@ -171,6 +190,7 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
             {tool('• Lijst', 'Opsomming', active?.bullet, () => editor?.chain().focus().toggleBulletList().run())}
             {tool('1. Lijst', 'Genummerde lijst', active?.ordered, () => editor?.chain().focus().toggleOrderedList().run())}
             {tool('“ Citaat', 'Citaat', active?.quote, () => editor?.chain().focus().toggleBlockquote().run())}
+            {tool('▦ Tabel', 'Tabel invoegen', active?.table, () => editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run())}
             <span className="sep" />
             {tool('↶', 'Ongedaan maken (Ctrl+Z)', false, () => editor?.chain().focus().undo().run())}
             {tool('↷', 'Opnieuw (Ctrl+Shift+Z)', false, () => editor?.chain().focus().redo().run())}
@@ -187,6 +207,34 @@ export default function NewsEditor({ slug, sha: initialSha, meta: initialMeta, b
               onChange={(e) => set('title', e.target.value.replace(/\n/g, ' '))}
             />
             <EditorContent editor={editor} className="prose" />
+            {editor && (
+              <>
+                {/* Tekst geselecteerd (buiten een tabel): snelle opmaak */}
+                <BubbleMenu
+                  editor={editor}
+                  pluginKey="textMenu"
+                  className="toolbar bubble"
+                  shouldShow={({ editor, from, to }) => from !== to && !editor.isActive('table')}
+                >
+                  {tool(<b>B</b>, 'Vet (Ctrl+B)', active?.bold, () => editor.chain().focus().toggleBold().run())}
+                  {tool(<i>I</i>, 'Cursief (Ctrl+I)', active?.italic, () => editor.chain().focus().toggleItalic().run())}
+                  {tool('Link', 'Link', active?.link, setLink)}
+                  <span className="sep" />
+                  {tool('Kop', 'Kop', active?.h2, () => editor.chain().focus().toggleHeading({ level: 2 }).run())}
+                  {tool('Subkop', 'Subkop', active?.h3, () => editor.chain().focus().toggleHeading({ level: 3 }).run())}
+                </BubbleMenu>
+                {/* Cursor in een tabel: rijen en kolommen */}
+                <BubbleMenu editor={editor} pluginKey="tableMenu" className="toolbar bubble" shouldShow={({ editor }) => editor.isActive('table')}>
+                  {tool('+ Rij', 'Rij eronder', false, () => editor.chain().focus().addRowAfter().run())}
+                  {tool('+ Kolom', 'Kolom rechts', false, () => editor.chain().focus().addColumnAfter().run())}
+                  <span className="sep" />
+                  {tool('− Rij', 'Rij verwijderen', false, () => editor.chain().focus().deleteRow().run())}
+                  {tool('− Kolom', 'Kolom verwijderen', false, () => editor.chain().focus().deleteColumn().run())}
+                  <span className="sep" />
+                  {tool('Tabel weg', 'Tabel verwijderen', false, () => editor.chain().focus().deleteTable().run())}
+                </BubbleMenu>
+              </>
+            )}
           </div>
         </div>
 

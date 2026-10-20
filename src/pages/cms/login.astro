@@ -1,5 +1,5 @@
 ---
-import Beheer from '../../layouts/Beheer.astro';
+import Cms from '../../layouts/Cms.astro';
 
 export const prerender = false;
 
@@ -11,14 +11,14 @@ const messages: Record<string, string> = {
 const message = messages[Astro.url.searchParams.get('status') ?? ''];
 ---
 
-<Beheer title="Inloggen">
+<Cms title="Inloggen">
   <div class="card">
     <h1>Inloggen</h1>
     <p class="lead">Log in met het Google-account waarmee je toegang hebt gekregen.</p>
     {message && <p class="message" role="status">{message}</p>}
-    <a href="/api/beheer/google" class="pill google">Inloggen met Google</a>
+    <a href="/api/cms/google" class="pill google">Inloggen met Google</a>
   </div>
-</Beheer>
+</Cms>
 
 <style>
   .card {

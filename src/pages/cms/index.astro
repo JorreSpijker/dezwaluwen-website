@@ -1,6 +1,6 @@
 ---
 import PublishPanel from '../../components/admin/PublishPanel';
-import Beheer from '../../layouts/Beheer.astro';
+import Cms from '../../layouts/Cms.astro';
 import { parseNews } from '../../lib/admin/news';
 import { drafts, pending, previewUrl, readFile } from '../../lib/admin/repo';
 
@@ -31,14 +31,14 @@ const items = await Promise.all(
 );
 const preview = changes?.head ? await previewUrl(changes.head) : null;
 const sections = [
-  { href: '/beheer/nieuws', title: 'Nieuws', text: 'Berichten schrijven, aanpassen en vastpinnen' },
-  { href: '/beheer/trainingstijden', title: 'Trainingstijden', text: 'Tijden en velden voor veld en zaal' },
-  { href: '/beheer/organisatie', title: 'Bestuur & commissies', text: 'Leden, taken en contactgegevens' },
-  { href: '/beheer/club', title: 'Teams & Sportlink', text: 'Teams, teamcodes en poules' },
+  { href: '/cms/nieuws', title: 'Nieuws', text: 'Berichten schrijven, aanpassen en vastpinnen' },
+  { href: '/cms/trainingstijden', title: 'Trainingstijden', text: 'Tijden en velden voor veld en zaal' },
+  { href: '/cms/organisatie', title: 'Bestuur & commissies', text: 'Leden, taken en contactgegevens' },
+  { href: '/cms/club', title: 'Teams & Sportlink', text: 'Teams, teamcodes en poules' },
 ];
 ---
 
-<Beheer title="Overzicht">
+<Cms title="Overzicht">
   <h1>Hoi {user.name}</h1>
   <p class="lead">
     {
@@ -58,7 +58,7 @@ const sections = [
       ))
     }
   </div>
-</Beheer>
+</Cms>
 
 <style>
   h1 {

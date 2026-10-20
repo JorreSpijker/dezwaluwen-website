@@ -100,7 +100,7 @@ export async function commit(changes: Change[], message: string, author: { name:
         await writeFile(root(c.path), Buffer.from(c.content, c.encoding === 'base64' ? 'base64' : 'utf8'));
       }
     }
-    console.log(`[beheer] lokaal opgeslagen (geen commit): ${message}`);
+    console.log(`[cms] lokaal opgeslagen (geen commit): ${message}`);
     return { shas, commit: null, draft: false };
   }
 

@@ -17,18 +17,18 @@ const { user } = Astro.locals;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
-    <title>{title} — Beheer KV de Zwaluwen</title>
+    <title>{title} — CMS KV de Zwaluwen</title>
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
   </head>
   <body>
     <header class="bar">
-      <a href="/beheer" class="brand">
+      <a href="/cms" class="brand">
         <img src="/logo.svg" alt="" width="32" height="33" />
-        Beheer
+        CMS
       </a>
       {
         user && (
-          <form method="post" action="/api/beheer/logout" class="user">
+          <form method="post" action="/api/cms/logout" class="user">
             <span>{user.name}</span>
             <button type="submit">Uitloggen</button>
           </form>
