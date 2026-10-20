@@ -63,11 +63,23 @@ function groupByDay(matches: ApiMatch[]): MatchDay[] {
 
 const DAY = 24 * 60 * 60 * 1000;
 
-async function fetchMatches(endpoint: 'program' | 'results', from: Date, to: Date) {
-  const res = await fetch(`${API}/${endpoint}?dateFrom=${isoDate(from)}&dateTo=${isoDate(to)}`);
-  if (!res.ok) throw new Error(`korfbal.nl ${endpoint}: HTTP ${res.status}`);
-  const { data: weeks } = (await res.json()) as { data: ApiWeek[] };
-  return weeks.flatMap((w) => w.matches);
+// Storing bij korfbal.nl mag de build (en dus elke contentwijziging) niet blokkeren:
+// dan zonder wedstrijden verder, met een waarschuwing in de buildlog.
+// Na de eerste fout de rest van de build overslaan, anders wacht elke pagina op een timeout.
+let unavailable = false;
+
+async function fetchMatches(endpoint: 'program' | 'results', from: Date, to: Date): Promise<ApiMatch[]> {
+  if (unavailable) return [];
+  try {
+    const res = await fetch(`${API}/${endpoint}?dateFrom=${isoDate(from)}&dateTo=${isoDate(to)}`, { signal: AbortSignal.timeout(10_000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { data: weeks } = (await res.json()) as { data: ApiWeek[] };
+    return weeks.flatMap((w) => w.matches);
+  } catch (error) {
+    unavailable = true;
+    console.warn(`korfbal.nl ${endpoint} niet beschikbaar, verder zonder wedstrijden:`, String(error));
+    return [];
+  }
 }
 
 export async function getMatches(): Promise<{ program: MatchDay[]; results: MatchDay[] }> {
@@ -154,13 +166,21 @@ type ApiStanding = {
   stats: { position: number; played: number; won: number; draw: number; lost: number; points: number; goals: { difference: number } };
 };
 
-// Stand van elke poule waarin het team speelt
+// Stand van elke poule waarin het team speelt; poule die niet te laden is, wordt overgeslagen (zie fetchMatches)
 export async function getTeamStandings(team: ClubTeam): Promise<Standing[]> {
-  return Promise.all(
-    team.pools.map(async (pool) => {
-      const res = await fetch(`${STANDING_API}/${pool.code}/standing`);
-      if (!res.ok) throw new Error(`stand poule ${pool.code}: HTTP ${res.status}`);
-      const { data } = (await res.json()) as { data: { standings: ApiStanding[] }[] };
+  const standings = await Promise.all(
+    team.pools.map(async (pool): Promise<Standing | undefined> => {
+      if (unavailable) return undefined;
+      let data: { standings: ApiStanding[] }[];
+      try {
+        const res = await fetch(`${STANDING_API}/${pool.code}/standing`, { signal: AbortSignal.timeout(10_000) });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        ({ data } = (await res.json()) as { data: { standings: ApiStanding[] }[] });
+      } catch (error) {
+        unavailable = true;
+        console.warn(`stand poule ${pool.code} niet beschikbaar, overgeslagen:`, String(error));
+        return undefined;
+      }
       return {
         pool: pool.name,
         rows: data
@@ -180,4 +200,5 @@ export async function getTeamStandings(team: ClubTeam): Promise<Standing[]> {
       };
     }),
   );
+  return standings.filter((s) => s !== undefined);
 }
