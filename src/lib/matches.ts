@@ -71,7 +71,7 @@ let unavailable = false;
 async function fetchMatches(endpoint: 'program' | 'results', from: Date, to: Date): Promise<ApiMatch[]> {
   if (unavailable) return [];
   try {
-    const res = await fetch(`${API}/${endpoint}?dateFrom=${isoDate(from)}&dateTo=${isoDate(to)}`, { signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(`${API}/${endpoint}?teamDetails=true&facility=true&dateFrom=${isoDate(from)}&dateTo=${isoDate(to)}`, { signal: AbortSignal.timeout(10_000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const { data: weeks } = (await res.json()) as { data: ApiWeek[] };
     return weeks.flatMap((w) => w.matches);
